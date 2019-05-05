@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Test</title>
     <link rel="stylesheet" href="{% static "landing.css" %}">
     <link rel="stylesheet" href="{% static "main.css" %}">
 </head>
@@ -12,7 +12,7 @@
     <h1>Сайт-Пупусайт</h1>
     <section class="form_section">
         <div>
-            <form action="" method="post" id="user_form">{% csrf_token %}
+            <form action="/landing/add_user/" method="post" id="user_form">{% csrf_token %}
                 <div>
                     <label>Your name: </label>
                     {{ form.name }}
