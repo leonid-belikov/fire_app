@@ -18,5 +18,6 @@ from landing import views
 
 urlpatterns = [
     path('pupu/', views.landing, name='landing'),
-    path('add_user/', views.add_user, name='add_user')
+    path('add_mm/', views.add_mm, name='add_mm'),
+    path('filter_by_date/', views.filter_by_date, name='filter_by_date'),
 ]

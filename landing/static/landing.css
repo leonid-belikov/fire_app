@@ -1,3 +1,117 @@
-.users {
-    background-color: burlywood;
+.header_title {
+    width: 100%;
+    margin: 20px auto;
+}
+
+.total_info {
+    background-color: #cbbef7;
+}
+
+.date_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding: 10px 0;
+}
+
+.date_item {
+    background-color: #f6f9ff;
+    height: 30px;
+    padding: 5px;
+    margin: 0px 4px 3px;
+    width: 117px;
+    text-align: center;
+    border: 1px solid #a5a5a5;
+}
+
+.form_section {
+    display: none;
+}
+
+#mm_form label {
+    min-width: 80px;
+    display: inline-block;
+    text-align: right;
+}
+
+#mm_form button {
+    font-size: 30px;
+    width: 248px;
+    height: 50px;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+.income_item {
+    background-color: springgreen;
+}
+
+.direction_checkbox label {
+    width: 80px;
+    display: inline-block;
+    text-align: right;
+    margin-bottom: 3px;
+}
+
+.form_field.comment label {
+    position: relative;
+    top: -45px;
+}
+
+.form_field.comment textarea {
+    height: 60px;
+}
+
+.direction_checkbox input {
+    width: 21px;
+    height: 21px;
+    margin: 0;
+    top: 6px;
+    position: relative;
+}
+
+.form_field {
+    margin: 5px 0;
+}
+
+.mms {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.mms td {
+    padding: 6px 10px;
+}
+
+#mm_table {
+    display: block;
+    margin: 0 auto;
+    width: 730px;
+}
+
+#mm_table .date {
+    width: 120px;
+    height: 30px;
+}
+
+#mm_table .amount {
+    width: 120px;
+    text-align: right;
+}
+
+#mm_table .purpose {
+    width: 180px;
+}
+
+#mm_table .tag {
+    width: 120px;
+}
+
+#mm_table .comment {
+    width: 180px;
+    height: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
 }

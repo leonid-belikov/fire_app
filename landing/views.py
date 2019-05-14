@@ -1,37 +1,62 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.http import JsonResponse
-from .forms import SubscriberForm
-from .models import Subscriber
+from django.views.decorators.csrf import ensure_csrf_cookie
+from .forms import MoneyMovementForm
+from .models import MoneyMovement
 
 
+@ensure_csrf_cookie
 def landing(request):
 
-    form = SubscriberForm(None)
-    users = [user for user in Subscriber.objects.all()]
+    form = MoneyMovementForm(None)
+    mms = get_last_mms()
+    total_amount = get_total_amount()
+    dates_set = set(MoneyMovement.objects.values_list('date', flat=True))
+    dates = sorted([str(date) for date in dates_set])
+
+    print(dates)
 
     return render(request, 'landing/landing.html', locals())
 
 
-def reload_users_table():
+def add_mm(request):
 
-    resp_text = {}
-
-    for user in Subscriber.objects.all():
-        resp_text[user.id] = {
-            'name': user.name,
-            'email': user.email
-        }
-
-    return JsonResponse(resp_text)
-
-
-def add_user(request):
-
-    form = SubscriberForm(request.POST or None)
+    form = MoneyMovementForm(request.POST or None)
 
     if request.method == 'POST' and form.is_valid():
         form.save()
-        return reload_users_table()
+        return JsonResponse({'items': get_last_mms(), 'total_amount': get_total_amount()})
 
     return JsonResponse({'Error': 'invalid form'})
+
+
+def filter_by_date(request):
+
+    if request.method == 'POST' and request.POST['date'] is not None:
+        filter_date = request.POST['date']
+        values = MoneyMovement.objects.filter(date=filter_date).values()
+        mms = [mm for mm in values]
+
+        return JsonResponse({'items': mms})
+
+    return JsonResponse({'Error': 'Invalid request'})
+
+
+def get_last_mms():
+
+    # пять последних записей для отображения на странице
+    values = MoneyMovement.objects.all().reverse()[:5].values()
+    mms = [mm for mm in values]
+
+    return mms
+
+
+def get_total_amount():
+    total_amount = 0
+    for rec in MoneyMovement.objects.values('amount', 'direction'):
+        if rec['direction'] == 'income':
+            total_amount += rec['amount']
+        elif rec['direction'] == 'cost':
+            total_amount -= rec['amount']
+
+    return total_amount
