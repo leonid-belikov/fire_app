@@ -1,6 +1,7 @@
 * {
     margin: 0;
     box-sizing: border-box;
+    font-family: 'Arsenal', Tahoma, sans-serif;
 }
 
 body {
@@ -8,17 +9,19 @@ body {
     background-size: cover;
     padding-bottom: 70px;
     background-position-y: -30px;
+    font-size: 18px;
 }
 
 .wrap_container {
-    background-color: rgba(236, 239, 241, 0.7);
+    /* background-color: rgba(236, 239, 241, 0.7); */
     width: 900px;
     margin: 0 auto;
     height: 100%;
-    padding: 0 10px;
+    /* padding: 0 10px; */
     padding-bottom: 30px;
 }
 
 h1 {
     text-align: center;
+    font-size: 36px;
 }

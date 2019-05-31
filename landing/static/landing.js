@@ -2,8 +2,14 @@
 
 
 const self = this;
+
+
+const commentArea = document.querySelector('#id_comment');
+commentArea.setAttribute('placeholder', 'Заполнять не обязательно');
+
+
 const MMForm = document.querySelector('#mm_form');
-const dateBox = document.querySelector('.date_wrapper');
+
 
 
 MMForm.onsubmit = function (event) {
@@ -25,9 +31,11 @@ MMForm.onsubmit = function (event) {
 };
 
 
+const dateBox = document.querySelector('.date_wrapper');
+
 dateBox.onclick = function (event) {
     let target = event.target;
-    if (~target.className.indexOf('date_item')) {
+    if (target.className.includes('date_item')) {
         let url = '/landing/filter_by_date/';
         let data = new FormData;
         data.append('date', target.innerText);
@@ -80,6 +88,9 @@ function addRowToMMTable(data) {
             td.innerText += data[key];
         }
         td.className = key;
+        if (key === 'comment') {
+            td.setAttribute('title', data[key]);
+        }
         row.appendChild(td);
     }
 
@@ -97,8 +108,34 @@ function getCSRFToken() {
     if (!cookies) {
         return null;
     }
-    if (~cookies.indexOf('csrftoken')) {
+    if (cookies.includes('csrftoken')) {
         let begin_index = cookies.indexOf('csrftoken');
         return cookies.slice(begin_index+10, begin_index+74);
     }
 }
+
+
+let tabTitlesBox = document.querySelector('.tabs_header');
+
+tabTitlesBox.onclick = function (event) {
+    let target = event.target;
+    if (target.className.includes('tab_title')) {
+        let url = '/landing/planning/';
+        let data = new FormData;
+        data.append('tab_id', target.id);
+        let headers = {
+            'X-CSRFToken': self.getCSRFToken()
+        };
+        fetch(url, {
+            method: 'post',
+            headers: headers,
+            body: data
+        }).then(function(response) {
+            response.text().then(function(text) {
+                console.log(text);
+                let tabContentBox = document.querySelector('.tab_content');
+                tabContentBox.innerHTML = text;
+            });
+        });
+    }
+};
