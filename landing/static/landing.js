@@ -8,51 +8,56 @@ const commentArea = document.querySelector('#id_comment');
 commentArea.setAttribute('placeholder', 'Заполнять не обязательно');
 
 
-const MMForm = document.querySelector('#mm_form');
+setTabHandlers();
 
 
+function setTabHandlers() {
+    let MMForm = document.querySelector('#mm_form');
+    let dateBox = document.querySelector('.date_wrapper');
 
-MMForm.onsubmit = function (event) {
-    event.preventDefault();
-    let target = event.target;
-    let url = target.action;
-    let data = new FormData(target);
-    let isIncome = document.querySelector('#direction').checked;
-    data.append('direction', isIncome ? 'income' : 'cost');
+    if (MMForm) {
+        MMForm.onsubmit = function (event) {
+            event.preventDefault();
+            let target = event.target;
+            let url = target.action;
+            let data = new FormData(target);
+            let isIncome = document.querySelector('#direction').checked;
+            data.append('direction', isIncome ? 'income' : 'cost');
 
-    fetch(url, {
-        method: 'post',
-        body: data
-    }).then(function(response) {
-        response.json().then(function(json) {
-            self.reloadMMTable(json);
-        });
-    });
-};
-
-
-const dateBox = document.querySelector('.date_wrapper');
-
-dateBox.onclick = function (event) {
-    let target = event.target;
-    if (target.className.includes('date_item')) {
-        let url = '/landing/filter_by_date/';
-        let data = new FormData;
-        data.append('date', target.innerText);
-        let headers = {
-            'X-CSRFToken': self.getCSRFToken()
-        };
-        fetch(url, {
-            method: 'post',
-            headers: headers,
-            body: data
-        }).then(function(response) {
-            response.json().then(function(json) {
-                self.reloadMMTable(json);
+            fetch(url, {
+                method: 'post',
+                body: data
+            }).then(function (response) {
+                response.json().then(function (json) {
+                    self.reloadMMTable(json);
+                });
             });
-        });
+        };
     }
-};
+
+    if (dateBox) {
+        dateBox.onclick = function (event) {
+            let target = event.target;
+            if (target.className.includes('date_item')) {
+                let url = '/landing/filter_by_date/';
+                let data = new FormData;
+                data.append('date', target.innerText);
+                let headers = {
+                    'X-CSRFToken': self.getCSRFToken()
+                };
+                fetch(url, {
+                    method: 'post',
+                    headers: headers,
+                    body: data
+                }).then(function (response) {
+                    response.json().then(function (json) {
+                        self.reloadMMTable(json);
+                    });
+                });
+            }
+        };
+    }
+}
 
 
 function reloadMMTable(json) {
@@ -115,14 +120,21 @@ function getCSRFToken() {
 }
 
 
-let tabTitlesBox = document.querySelector('.tabs_header');
+const tabTitlesBox = document.querySelector('.tabs_header');
 
 tabTitlesBox.onclick = function (event) {
     let target = event.target;
     if (target.className.includes('tab_title')) {
-        let url = '/landing/planning/';
+        let currentTabTitle = document.querySelector('.tab_title.current');
+        let url = '/landing/tab/';
         let data = new FormData;
-        data.append('tab_id', target.id);
+
+        //Перебросим класс заголовка текущей вкладки
+        currentTabTitle.classList.remove('current');
+        target.classList.add('current');
+
+        //Обновим контент вкладки
+        data.append('template', target.getAttribute('template'));
         let headers = {
             'X-CSRFToken': self.getCSRFToken()
         };
@@ -132,9 +144,9 @@ tabTitlesBox.onclick = function (event) {
             body: data
         }).then(function(response) {
             response.text().then(function(text) {
-                console.log(text);
                 let tabContentBox = document.querySelector('.tab_content');
                 tabContentBox.innerHTML = text;
+                setTabHandlers();
             });
         });
     }

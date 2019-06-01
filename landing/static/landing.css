@@ -65,6 +65,10 @@
     top: -45px;
 }
 
+.form_field.comment {
+    margin-top: 7px;
+}
+
 .form_field.comment textarea {
     height: 60px;
 }

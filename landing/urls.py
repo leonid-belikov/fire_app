@@ -20,5 +20,5 @@ urlpatterns = [
     path('pupu/', views.landing, name='landing'),
     path('add_mm/', views.add_mm, name='add_mm'),
     path('filter_by_date/', views.filter_by_date, name='filter_by_date'),
-    path('planning/', views.planning, name='planning'),
+    path('tab/', views.render_tab, name='render_tab'),
 ]

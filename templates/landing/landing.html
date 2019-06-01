@@ -15,79 +15,12 @@
     <h1 class="header_title">Сайт-Пупусайт</h1>
     <div class="wrap_container">
         <div class="tabs_header">
-            <div class="tab_title" id="tab_title_plan">Планируем</div>
-            <div class="tab_title current" id="tab_title_reg">Фиксируем</div>
-            <div class="tab_title" id="tab_title_total">Контролируем</div>
+            <div class="tab_title" template="landing/tab_plan.html">Планируем</div>
+            <div class="tab_title current" template="landing/tab_reg.html">Фиксируем</div>
+            <div class="tab_title" template="landing/tab_total.html">Контролируем</div>
         </div>
         <div class="tab_content">
-            <section class="total_chart">
-                <div class="date_wrapper">
-                    {% for date in dates %}
-                        <div class="date_item">{{ date }}</div>
-                    {% endfor %}
-                </div>
-            </section>
-            <section class="total_info">
-                <h2>Общая сумма: <span id="total_amount">{{ total_amount }}</span> р.</h2>
-            </section>
-            <section class="form_section">
-                <div>
-                    <div class="direction_checkbox">
-                        <label for="direction">Income:</label>
-                        <input type="checkbox" id="direction">
-                    </div>
-                    <form action="/landing/add_mm/" method="post" id="mm_form">{% csrf_token %}
-                        <div class="form_field">
-                            <label>Date: </label>
-                            {{ form.date }}
-                        </div>
-                        <div class="form_field">
-                            <label>Amount: </label>
-                            {{ form.amount }}
-                        </div>
-                        <div class="form_field">
-                            <label>Purpose: </label>
-                            {{ form.purpose }}
-                        </div>
-                        <div class="form_field">
-                            <label>Tag: </label>
-                            {{ form.tag }}
-                        </div>
-                        <div class="form_field comment">
-                            <label>Comment: </label>
-                            {{ form.comment }}
-                        </div>
-                        <div>
-                            <button type="submit">Добавить</button>
-                        </div>
-                    </form>
-                </div>
-            </section>
-            <section class="mms">
-                <h2>Движение средств:</h2>
-                <table id="mm_table">
-                <thead>
-                    <tr>
-                        <th class="date">Date</th>
-                        <th class="amount">Amount</th>
-                        <th class="purpose">Purpose</th>
-                        <th class="tag">Tag</th>
-                        <th class="comment">Comment</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for mm in mms %}
-                        <tr mm_id="{{ mm.id }}" class="{% if mm.direction == 'income' %}income_item{% endif %}">
-                            <td class="date">{{ mm.date }}</td>
-                            <td class="amount">{{ mm.amount }}</td>
-                            <td class="purpose">{{ mm.purpose }}</td>
-                            <td class="tag">#{{ mm.tag }}</td>
-                            <td class="comment" title="{{ mm.comment }}">{{ mm.comment }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-                </table>
-            </section>
+            {% include 'landing/tab_reg.html' %}
         </div>
     </div>
     <script src="{% static "landing.js" %}"></script>

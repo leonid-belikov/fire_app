@@ -1,24 +1,36 @@
 from django.shortcuts import render
 from django.shortcuts import render_to_response
-from django.template.response import TemplateResponse
-from django.template import Template, Context
+# from django.template.response import TemplateResponse
+# from django.template import Template, Context
+from django.template import RequestContext
 from django.http import JsonResponse
-from django.http import HttpResponse
-from django.views.decorators.csrf import ensure_csrf_cookie
+# from django.http import HttpResponse
+# from django.views.decorators.csrf import ensure_csrf_cookie
 from .forms import MoneyMovementForm
 from .models import MoneyMovement
 
 
-@ensure_csrf_cookie
+# @ensure_csrf_cookie
 def landing(request):
 
-    form = MoneyMovementForm(None)
-    mms = get_last_mms()
-    total_amount = get_total_amount()
-    dates_set = set(MoneyMovement.objects.values_list('date', flat=True))
-    dates = sorted([str(date) for date in dates_set])
+    ctx = get_context()
 
-    return render(request, 'landing/landing.html', locals())
+    return render(request, 'landing/landing.html', ctx)
+
+
+def get_context(url=None):
+    if not url or url == 'landing/tab_reg.html':
+        dates_set = set(MoneyMovement.objects.values_list('date', flat=True))
+        context = {
+            'form': MoneyMovementForm(None),
+            'mms': get_last_mms(),
+            'total_amount': get_total_amount(),
+            'dates': sorted([str(date) for date in dates_set])
+        }
+    else:
+        context = {}
+
+    return context
 
 
 def add_mm(request):
@@ -64,7 +76,8 @@ def get_total_amount():
     return total_amount
 
 
-def planning(request):
-    info = request.POST['tab_id']
+def render_tab(request):
+    template = request.POST['template']
+    ctx = get_context(template)
 
-    return render_to_response('landing/plan.html', {'info': info})
+    return render(request, template, ctx)
