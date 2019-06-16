@@ -2,14 +2,6 @@ from django.db import models
 from django.utils.timezone import now
 
 
-class Subscriber(models.Model):
-    email = models.EmailField()
-    name = models.CharField(max_length=128)
-
-    def __str__(self):
-        return str(self.id)
-
-
 class MoneyMovement(models.Model):
     amount = models.DecimalField(max_digits=9, decimal_places=2)
     date = models.DateField(default=now)

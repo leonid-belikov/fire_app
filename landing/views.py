@@ -27,6 +27,14 @@ def get_context(url=None):
             'total_amount': get_total_amount(),
             'dates': sorted([str(date) for date in dates_set])
         }
+    elif url == 'landing/tab_plan.html':
+        context = {
+            'text': 'Распланируем доходы и расходы'
+        }
+    elif url == 'landing/tab_total.html':
+        context = {
+            'text': 'Посмотрим, как распеределены бабосы'
+        }
     else:
         context = {}
 

@@ -10,6 +10,7 @@ body {
     padding-bottom: 70px;
     background-position-y: -30px;
     font-size: 18px;
+    overflow-y: scroll;
 }
 
 .wrap_container {
