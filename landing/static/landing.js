@@ -13,26 +13,66 @@ setTabHandlers();
 
 function setTabHandlers() {
     let MMForm = document.querySelector('#mm_form');
+    let MMPlanForm = document.querySelector('#mm_plan_form');
     let dateBox = document.querySelector('.date_wrapper');
 
-    if (MMForm) {
-        MMForm.onsubmit = function (event) {
+    let formSender = function (form, checkbox_selector, callback) {
+        form.onsubmit = function (event) {
             event.preventDefault();
             let target = event.target;
             let url = target.action;
             let data = new FormData(target);
-            let isIncome = document.querySelector('#direction').checked;
+            let isIncome = document.querySelector(checkbox_selector).checked;
             data.append('direction', isIncome ? 'income' : 'cost');
 
             fetch(url, {
                 method: 'post',
                 body: data
             }).then(function (response) {
-                response.json().then(function (json) {
-                    self.reloadMMTable(json);
-                });
+                callback(response);
             });
         };
+    };
+
+    let MMFormCallback = function (response) {
+        response.text().then(function (text) {
+            let mmTableBody = document.querySelector('#mm_table');
+            mmTableBody.innerHTML = text;
+            reloadTotalAmount();
+        });
+    };
+
+    let MMPlanFormCallback = function (response) {
+        response.text().then(function (text) {
+            console.log(text);
+            // Тут добавить обновление запланированной суммы на странице
+        });
+    };
+
+    let reloadTotalAmount = function () {
+        let url = '/landing/reload_total_amount/';
+        let headers = {
+            'X-CSRFToken': self.getCSRFToken()
+        };
+        fetch(url, {
+            method: 'post',
+            headers: headers
+        }).then(function (response) {
+            response.json().then(function (json) {
+                if (json['total_amount']) {
+                    let totalAmountSpan = document.querySelector('#total_amount');
+                    totalAmountSpan.innerText = json['total_amount'];
+                }
+            })
+        })
+    };
+
+    if (MMForm) {
+        formSender(MMForm, '#direction', MMFormCallback);
+    }
+
+    if (MMPlanForm) {
+        formSender(MMPlanForm, '#plan_direction', MMPlanFormCallback);
     }
 
     if (dateBox) {
@@ -50,61 +90,14 @@ function setTabHandlers() {
                     headers: headers,
                     body: data
                 }).then(function (response) {
-                    response.json().then(function (json) {
-                        self.reloadMMTable(json);
+                    response.text().then(function (text) {
+                        let mmTableBody = document.querySelector('#mm_table');
+                        mmTableBody.innerHTML = text;
                     });
                 });
             }
         };
     }
-}
-
-
-function reloadMMTable(json) {
-    if ('Error' in json) {
-        let mmTable = document.querySelector('#mm_table');
-        mmTable.innerText = 'Data error: ' + json.Error;
-    } else {
-        let mmTableBody = document.querySelector('#mm_table tbody');
-        mmTableBody.innerHTML = '';
-        for (let i = 0; i < json['items'].length; i++) {
-            let row = self.addRowToMMTable(json['items'][i]);
-            mmTableBody.appendChild(row);
-        }
-        if (json['total_amount']) {
-            let totalAmountSpan = document.querySelector('#total_amount');
-            totalAmountSpan.innerText = json['total_amount'];
-        }
-    }
-}
-
-
-function addRowToMMTable(data) {
-// data - объект, содержащий ключи: id, date, amount, purpose, tag, comment
-
-    let row = document.createElement('tr');
-    let columns = ['date', 'amount', 'purpose', 'tag', 'comment'];
-
-    for (let i=0; i<columns.length; i++) {
-        let key = columns[i];
-        let td = document.createElement('td');
-        if (key in data) {
-            td.innerText = key === 'tag' ? '#' : '';
-            td.innerText += data[key];
-        }
-        td.className = key;
-        if (key === 'comment') {
-            td.setAttribute('title', data[key]);
-        }
-        row.appendChild(td);
-    }
-
-    row.setAttribute('mm_id', data['id'].toString());
-    if (data['direction'] === 'income') {
-        row.className = 'income_item';
-    }
-
-    return row;
 }
 
 
@@ -151,3 +144,52 @@ tabTitlesBox.onclick = function (event) {
         });
     }
 };
+
+// Если ничего не падает - удалить:
+// function reloadMMTable(json) {
+//     if ('Error' in json) {
+//         let mmTable = document.querySelector('#mm_table');
+//         mmTable.innerText = 'Data error: ' + json.Error;
+//     } else {
+//         let mmTableBody = document.querySelector('#mm_table tbody');
+//         mmTableBody.innerHTML = '';
+//         for (let i = 0; i < json['items'].length; i++) {
+//             let row = self.addRowToMMTable(json['items'][i]);
+//             mmTableBody.appendChild(row);
+//         }
+//         if (json['total_amount']) {
+//             let totalAmountSpan = document.querySelector('#total_amount');
+//             totalAmountSpan.innerText = json['total_amount'];
+//         }
+//     }
+// }
+
+
+// function addRowToMMTable(data) {
+// // data - объект, содержащий ключи: id, date, amount, purpose, category, comment
+//
+//     let row = document.createElement('tr');
+//     let columns = ['date', 'amount', 'purpose', 'comment'];
+//
+//     for (let i=0; i<columns.length; i++) {
+//         let key = columns[i];
+//         let td = document.createElement('td');
+//         if (key in data) {
+//             // td.innerText = key === 'tag' ? '#' : '';
+//             // td.innerText += data[key];
+//             td.innerText = data[key];
+//         }
+//         td.className = key;
+//         if (key === 'comment') {
+//             td.setAttribute('title', data[key]);
+//         }
+//         row.appendChild(td);
+//     }
+//
+//     row.setAttribute('mm_id', data['id'].toString());
+//     if (data['direction'] === 'income') {
+//         row.className = 'income_item';
+//     }
+//
+//     return row;
+// }

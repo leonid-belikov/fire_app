@@ -1,13 +1,8 @@
 from django.shortcuts import render
-from django.shortcuts import render_to_response
-# from django.template.response import TemplateResponse
-# from django.template import Template, Context
-from django.template import RequestContext
 from django.http import JsonResponse
-# from django.http import HttpResponse
-# from django.views.decorators.csrf import ensure_csrf_cookie
-from .forms import MoneyMovementForm
+from .forms import MoneyMovementForm, MMPlanForm
 from .models import MoneyMovement
+from .tabs.plan import *
 
 
 # @ensure_csrf_cookie
@@ -22,6 +17,7 @@ def get_context(url=None):
     if not url or url == 'landing/tab_reg.html':
         dates_set = set(MoneyMovement.objects.values_list('date', flat=True))
         context = {
+            'text': 'Запишем фактические доходы и расходы',
             'form': MoneyMovementForm(None),
             'mms': get_last_mms(),
             'total_amount': get_total_amount(),
@@ -29,7 +25,13 @@ def get_context(url=None):
         }
     elif url == 'landing/tab_plan.html':
         context = {
-            'text': 'Распланируем доходы и расходы'
+            'text': 'Распланируем доходы и расходы',
+            'form': MMPlanForm(None),
+            'total_plan_amount': get_total_plan_amount()['total_plan_amount'],
+            'total_plan_income': get_total_plan_amount()['total_plan_income'],
+            'total_plan_cost': get_total_plan_amount()['total_plan_cost'],
+            'incomes': get_plan_incomes(),
+            'costs': get_plan_costs()
         }
     elif url == 'landing/tab_total.html':
         context = {
@@ -47,7 +49,8 @@ def add_mm(request):
 
     if request.method == 'POST' and form.is_valid():
         form.save()
-        return JsonResponse({'items': get_last_mms(), 'total_amount': get_total_amount()})
+        # return JsonResponse({'html': html, 'total_amount': get_total_amount()})
+        return render(request, 'landing/mm_table.html', {'mms': get_last_mms()})
 
     return JsonResponse({'Error': 'invalid form'})
 
@@ -59,7 +62,8 @@ def filter_by_date(request):
         values = MoneyMovement.objects.filter(date=filter_date).values()
         mms = [mm for mm in values]
 
-        return JsonResponse({'items': mms})
+        # return JsonResponse({'items': mms})
+        return render(request, 'landing/mm_table.html', {'mms': mms})
 
     return JsonResponse({'Error': 'Invalid request'})
 
@@ -82,6 +86,11 @@ def get_total_amount():
             total_amount -= rec['amount']
 
     return total_amount
+
+
+def reload_total_amount(request):
+
+    return JsonResponse({'total_amount': get_total_amount()})
 
 
 def render_tab(request):

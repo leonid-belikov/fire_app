@@ -1,0 +1,15 @@
+<table id="mm_table">
+    <tbody>
+        {% for mm in mms %}
+            <tr mm_id="{{ mm.id }}" class="{% if mm.direction == 'income' %}income_item{% endif %}">
+                <td class="date">{{ mm.date }}</td>
+                <td class="amount">{{ mm.amount }}</td>
+                <td class="purpose">
+                    <div class="purpose-text">{{ mm.purpose }}</div>
+                    <div class="category-text">{{ mm.category }}</div>
+                </td>
+                <td class="comment" title="{{ mm.comment }}">{{ mm.comment }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

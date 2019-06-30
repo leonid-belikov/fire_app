@@ -3,15 +3,36 @@
     margin: 20px auto;
 }
 
-.tab_content {
-    background-color: rgba(236, 239, 241, 0.7);
-    padding-bottom: 25px;
+.tab_content section {
+    background: linear-gradient(90deg, rgb(236, 239, 241), rgb(236, 239, 241) 40%, rgba(236, 239, 241, 0.7) 80%, rgba(236, 239, 241, 0.7));
+    padding: 10px;
+    box-shadow: 0px 7px 6px 0px #0000008f;
+}
+.tab_content section:first-child {
+    margin-top: 0;
+}
+.tab_content section:last-child {
+    padding-bottom: 50px;
+    margin-bottom: 0;
+}
+section.plan_tab {
+    border-top-left-radius: 0;
 }
 
 /*Область с информацией*/
 
 .total_info {
-    background-color: #cbbef7;
+    text-align: right;
+    height: 56px;
+}
+.total_info-text {
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.total_info_plan {
+    text-align: right;
+    height: 122px;
 }
 
 /*Область с фильтрацией*/
@@ -39,13 +60,13 @@
     /* display: none; */
 }
 
-#mm_form label {
+#mm_form label, #mm_plan_form label {
     min-width: 80px;
     display: inline-block;
     text-align: right;
 }
 
-#mm_form button {
+#mm_form button, #mm_plan_form button {
     font-size: 30px;
     width: 248px;
     height: 50px;
@@ -62,7 +83,7 @@
 
 .form_field.comment label {
     position: relative;
-    top: -45px;
+    top: 0px;
 }
 
 .form_field.comment {
@@ -88,8 +109,7 @@
 /*Область с таблицей данных*/
 
 .mms {
-    max-height: 400px;
-    overflow-y: auto;
+    /*max-height: 400px;*/
 }
 
 .mms td {
@@ -97,22 +117,26 @@
 }
 
 .income_item {
-    background-color: springgreen;
+    background: linear-gradient(90deg, rgba(0, 255, 17, 0.3), transparent, rgba(0, 255, 17, 0.3));
 }
 
 #mm_table {
     display: block;
-    margin: 0 auto;
+    margin: 20px auto 0;
     width: 730px;
+    border-collapse: collapse;
+}
+
+#mm_table tr {
+    border-bottom: 1px solid #999;
 }
 
 #mm_table .date {
     width: 120px;
-    height: 30px;
 }
 
 #mm_table .amount {
-    width: 120px;
+    width: 100px;
 }
 
 #mm_table td.amount {
@@ -123,12 +147,16 @@
     width: 180px;
 }
 
-#mm_table .tag {
-    width: 120px;
+#mm_table .category-text {
+    font-size: 14px;
+    color: #a5a5a5;
+    /* background: #fff; */
+    /* padding: 0 5px; */
+    width: fit-content;
 }
 
 #mm_table .comment {
-    width: 180px;
+    width: 330px;
     height: 100%;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -136,12 +164,64 @@
     display: block;
 }
 
+.plan_table_wrap {
+    /*display: inline-block;*/
+}
+
+.mm_plan_tables {
+    margin: 20px 75px 0;
+    /*display: flex;*/
+    /*justify-content: space-between;*/
+    /*padding: 1px 75px;*/
+}
+
+.plan_table {
+    border-collapse: collapse;
+    display: block;
+    margin: 20px auto;
+    width: 730px;
+}
+.plan_table tr {
+    border-bottom: 1px solid #999;
+}
+.plan_table td {
+    padding: 6px 10px;
+}
+.plan_table td.date {
+    width: 120px;
+}
+.plan_table td.amount {
+    width: 100px;
+}
+.plan_table td.purpose {
+    width: 180px;
+}
+.plan_table td.comment {
+    width: 330px;
+}
+.plan_table .category-text {
+    font-size: 14px;
+    color: #a5a5a5;
+    width: fit-content;
+}
+
+
+#income_table {
+    background: linear-gradient(90deg, rgba(0, 255, 17, 0.3), transparent, rgba(0, 255, 17, 0.3));
+}
+
+#cost_table {
+    background: linear-gradient(90deg, rgba(255, 0, 0, 0.3), transparent, rgba(255, 0, 0, 0.3));
+}
+
 /*Область с заголовками вкладок*/
 
 .tab_title {
     display: inline-block;
-    background-color: rgba(236, 239, 241, 0.7);
+    background-color: rgb(236, 239, 241);
     padding: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
 
 .tab_title:not(.current) {

@@ -15,10 +15,13 @@ Including another URLconf
 """
 from django.urls import path
 from landing import views
+from landing.tabs import plan
 
 urlpatterns = [
     path('pupu/', views.landing, name='landing'),
     path('add_mm/', views.add_mm, name='add_mm'),
     path('filter_by_date/', views.filter_by_date, name='filter_by_date'),
     path('tab/', views.render_tab, name='render_tab'),
+    path('add_mmplan/', plan.add_mmplan, name='add_mmplan'),
+    path('reload_total_amount/', views.reload_total_amount, name='reload_total_amount'),
 ]

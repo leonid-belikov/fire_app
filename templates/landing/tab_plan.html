@@ -1,4 +1,44 @@
-<div class="plan_content">
+<section class="section_title plan_tab">
     <h2>Планирование</h2>
     <p>{{ text }}</p>
-</div>
+</section>
+<section class="total_info">
+    <div class="total_info-text">Планируемый остаток: <span id="total_plan_amount">{{ total_plan_amount }}</span> р.</div>
+</section>
+<section class="form_section">
+    <div>
+        <div class="direction_checkbox">
+            <label for="direction">Income:</label>
+            <input type="checkbox" id="plan_direction">
+        </div>
+        <form action="/landing/add_mmplan/" method="post" id="mm_plan_form">{% csrf_token %}
+            <div class="form_field">
+                <label>Date: </label>
+                {{ form.date }}
+            </div>
+            <div class="form_field">
+                <label>Amount: </label>
+                {{ form.amount }}
+            </div>
+            <div class="form_field">
+                <label>Purpose: </label>
+                {{ form.purpose }}
+            </div>
+            <div class="form_field">
+                <label>Category: </label>
+                {{ form.category }}
+            </div>
+            <div class="form_field comment">
+                <label>Comment: </label>
+                {{ form.comment }}
+            </div>
+            <div>
+                <button type="submit">Добавить</button>
+            </div>
+        </form>
+    </div>
+</section>
+<section>
+    <h2>План расходов и доходов</h2>
+    {% include 'landing/mm_plan_table.html' %}
+</section>
