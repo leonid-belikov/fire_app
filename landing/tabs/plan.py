@@ -12,7 +12,13 @@ def add_mmplan(request):
     if request.method == 'POST':
         if form.is_valid():
             form.save()
-            return JsonResponse({'items': get_plan_mms(), 'total_amount': get_total_plan_amount()})
+            ctx = {
+                'total_plan_income': get_total_plan_amount()['total_plan_income'],
+                'total_plan_cost': get_total_plan_amount()['total_plan_cost'],
+                'incomes': get_plan_incomes(),
+                'costs': get_plan_costs()
+            }
+            return render(request, 'landing/mm_plan_table.html', ctx)
         else:
             error_msg = 'invalid form: %s' % form.errors
 

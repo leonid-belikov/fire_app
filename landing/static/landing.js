@@ -38,18 +38,19 @@ function setTabHandlers() {
         response.text().then(function (text) {
             let mmTableBody = document.querySelector('#mm_table');
             mmTableBody.innerHTML = text;
-            reloadTotalAmount();
+            reloadTotalAmountAndDates();
         });
     };
 
     let MMPlanFormCallback = function (response) {
         response.text().then(function (text) {
-            console.log(text);
+            let mmPlanTable = document.querySelector('.mm_plan_tables');
+            mmPlanTable.innerHTML = text;
             // Тут добавить обновление запланированной суммы на странице
         });
     };
 
-    let reloadTotalAmount = function () {
+    let reloadTotalAmountAndDates = function () {
         let url = '/landing/reload_total_amount/';
         let headers = {
             'X-CSRFToken': self.getCSRFToken()
@@ -62,6 +63,17 @@ function setTabHandlers() {
                 if (json['total_amount']) {
                     let totalAmountSpan = document.querySelector('#total_amount');
                     totalAmountSpan.innerText = json['total_amount'];
+                }
+                if (json['dates']) {
+                    let dates = json['dates'];
+                    let datesBox = document.querySelector('.date_wrapper');
+                    datesBox.innerHTML = '';
+                    for (let i=0; i<dates.length; i++) {
+                        let dateBox = document.createElement('div');
+                        dateBox.className = 'date_item';
+                        dateBox.innerText = dates[i];
+                        datesBox.appendChild(dateBox);
+                    }
                 }
             })
         })
@@ -144,52 +156,3 @@ tabTitlesBox.onclick = function (event) {
         });
     }
 };
-
-// Если ничего не падает - удалить:
-// function reloadMMTable(json) {
-//     if ('Error' in json) {
-//         let mmTable = document.querySelector('#mm_table');
-//         mmTable.innerText = 'Data error: ' + json.Error;
-//     } else {
-//         let mmTableBody = document.querySelector('#mm_table tbody');
-//         mmTableBody.innerHTML = '';
-//         for (let i = 0; i < json['items'].length; i++) {
-//             let row = self.addRowToMMTable(json['items'][i]);
-//             mmTableBody.appendChild(row);
-//         }
-//         if (json['total_amount']) {
-//             let totalAmountSpan = document.querySelector('#total_amount');
-//             totalAmountSpan.innerText = json['total_amount'];
-//         }
-//     }
-// }
-
-
-// function addRowToMMTable(data) {
-// // data - объект, содержащий ключи: id, date, amount, purpose, category, comment
-//
-//     let row = document.createElement('tr');
-//     let columns = ['date', 'amount', 'purpose', 'comment'];
-//
-//     for (let i=0; i<columns.length; i++) {
-//         let key = columns[i];
-//         let td = document.createElement('td');
-//         if (key in data) {
-//             // td.innerText = key === 'tag' ? '#' : '';
-//             // td.innerText += data[key];
-//             td.innerText = data[key];
-//         }
-//         td.className = key;
-//         if (key === 'comment') {
-//             td.setAttribute('title', data[key]);
-//         }
-//         row.appendChild(td);
-//     }
-//
-//     row.setAttribute('mm_id', data['id'].toString());
-//     if (data['direction'] === 'income') {
-//         row.className = 'income_item';
-//     }
-//
-//     return row;
-// }

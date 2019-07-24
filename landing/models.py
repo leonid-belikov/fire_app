@@ -24,7 +24,6 @@ class MoneyMovement(models.Model):
 
 class MMPlan(models.Model):
     amount = models.DecimalField(max_digits=9, decimal_places=2)
-    date = models.DateField(default=now)
     purpose = models.CharField(max_length=50)
     category = models.CharField(max_length=50)
     direction = models.CharField(max_length=10)
@@ -36,9 +35,9 @@ class MMPlan(models.Model):
         if self.direction not in ('income', 'cost'):
             return 'Wrong direction!'
         dir_string = 'Поступление' if self.direction == 'income' else 'Расход'
-        return '%s (%s) на %s руб. за %s %s' % (
-            dir_string, self.purpose, self.amount, str(self.date.month), str(self.date.year)
+        return '%s (%s) на %s руб.' % (
+            dir_string, self.purpose, self.amount
         )
 
     class Meta:
-        ordering = ['date', 'id']
+        ordering = ['id']

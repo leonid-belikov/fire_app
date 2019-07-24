@@ -13,4 +13,4 @@ class MMPlanForm(forms.ModelForm):
 
     class Meta:
         model = MMPlan
-        fields = ['date', 'amount', 'purpose', 'category', 'direction', 'comment']
+        fields = ['amount', 'purpose', 'category', 'direction', 'comment']

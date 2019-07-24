@@ -89,8 +89,12 @@ def get_total_amount():
 
 
 def reload_total_amount(request):
+    dates_set = set(MoneyMovement.objects.values_list('date', flat=True))
 
-    return JsonResponse({'total_amount': get_total_amount()})
+    return JsonResponse({
+        'total_amount': get_total_amount(),
+        'dates': sorted([str(date) for date in dates_set])
+    })
 
 
 def render_tab(request):

@@ -1,38 +1,36 @@
-<div class="mm_plan_tables">
-    <div class="plan_table_wrap">
-        <div class="total_info-text">Сумма доходов: <span id="total_plan_income">{{ total_plan_income }}</span> р.</div>
-        <table class="plan_table" id="income_table">
-            <tbody>
-                {% for income in incomes %}
-                    <tr mm_plan_id="{{ income.id }}">
-                        <td class="date">{{ income.date }}</td>
-                        <td class="amount">{{ income.amount }}</td>
-                        <td class="purpose">
-                            <div class="purpose-text">{{ income.purpose }}</div>
-                            <div class="category-text">{{ income.category }}</div>
-                        </td>
-                        <td class="comment" title="{{ income.comment }}">{{ income.comment }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="plan_table_wrap">
-        <div class="total_info-text">Сумма расходов: <span id="total_plan_cost">{{ total_plan_cost }}</span> р.</div>
-        <table class="plan_table" id="cost_table">
-            <tbody>
-                {% for cost in costs %}
-                    <tr mm_plan_id="{{ cost.id }}">
-                        <td class="date">{{ cost.date }}</td>
-                        <td class="amount">{{ cost.amount }}</td>
-                        <td class="purpose">
-                            <div class="purpose-text">{{ cost.purpose }}</div>
-                            <div class="category-text">{{ cost.category }}</div>
-                        </td>
-                        <td class="comment" title="{{ cost.comment }}">{{ cost.comment }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<div class="plan_table_wrap">
+    <div class="total_info-text">Сумма доходов: <span id="total_plan_income">{{ total_plan_income }}</span> р.</div>
+    <table class="plan_table" id="income_table">
+        <tbody>
+            {% for income in incomes %}
+                <tr mm_plan_id="{{ income.id }}">
+                    <td class="date">{{ income.date }}</td>
+                    <td class="amount">{{ income.amount }}</td>
+                    <td class="purpose">
+                        <div class="purpose-text">{{ income.purpose }}</div>
+                        <div class="category-text">{{ income.category }}</div>
+                    </td>
+                    <td class="comment" title="{{ income.comment }}">{{ income.comment }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="plan_table_wrap">
+    <div class="total_info-text">Сумма расходов: <span id="total_plan_cost">{{ total_plan_cost }}</span> р.</div>
+    <table class="plan_table" id="cost_table">
+        <tbody>
+            {% for cost in costs %}
+                <tr mm_plan_id="{{ cost.id }}">
+                    <td class="date">{{ cost.date }}</td>
+                    <td class="amount">{{ cost.amount }}</td>
+                    <td class="purpose">
+                        <div class="purpose-text">{{ cost.purpose }}</div>
+                        <div class="category-text">{{ cost.category }}</div>
+                    </td>
+                    <td class="comment" title="{{ cost.comment }}">{{ cost.comment }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>

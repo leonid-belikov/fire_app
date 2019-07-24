@@ -13,10 +13,6 @@
         </div>
         <form action="/landing/add_mmplan/" method="post" id="mm_plan_form">{% csrf_token %}
             <div class="form_field">
-                <label>Date: </label>
-                {{ form.date }}
-            </div>
-            <div class="form_field">
                 <label>Amount: </label>
                 {{ form.amount }}
             </div>
@@ -40,5 +36,7 @@
 </section>
 <section>
     <h2>План расходов и доходов</h2>
-    {% include 'landing/mm_plan_table.html' %}
+    <div class="mm_plan_tables">
+        {% include 'landing/mm_plan_table.html' %}
+    </div>
 </section>
