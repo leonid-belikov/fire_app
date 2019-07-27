@@ -3,9 +3,45 @@ from django.http import JsonResponse
 from .forms import MoneyMovementForm, MMPlanForm
 from .models import MoneyMovement
 from .tabs.plan import *
+from django.utils.timezone import now
 
 
-# @ensure_csrf_cookie
+class MainData:
+
+    def __init__(self, month, year):
+        self.current_month = now().month if month is None else month
+        self.current_year = now().year if year is None else year
+
+    def get_last_mms(self):
+        # пять последних записей для отображения на странице
+        values = MoneyMovement.objects.filter(
+            date__month=self.current_month,
+            date__year=self.current_year
+        ).reverse()[:5].values()
+        mms = [mm for mm in values]
+
+        return mms
+
+    def get_dates_for_filter(self):
+        return set(MoneyMovement.objects.filter(
+            date__month=self.current_month,
+            date__year=self.current_year
+        ).values_list('date', flat=True))
+
+    def get_total_amount(self):
+        total_amount = 0
+        for rec in MoneyMovement.objects.filter(
+            date__month=self.current_month,
+            date__year=self.current_year
+        ).values('amount', 'direction'):
+            if rec['direction'] == 'income':
+                total_amount += rec['amount']
+            elif rec['direction'] == 'cost':
+                total_amount -= rec['amount']
+
+        return total_amount
+
+
 def landing(request):
 
     ctx = get_context()
@@ -13,15 +49,19 @@ def landing(request):
     return render(request, 'landing/landing.html', ctx)
 
 
-def get_context(url=None):
+def get_context(month=None, year=None, url=None):
+    main_data = MainData(month, year)
+
     if not url or url == 'landing/tab_reg.html':
-        dates_set = set(MoneyMovement.objects.values_list('date', flat=True))
+        mms = main_data.get_last_mms()
+        dates = main_data.get_dates_for_filter()
+        total_amount = main_data.get_total_amount()
         context = {
             'text': 'Запишем фактические доходы и расходы',
             'form': MoneyMovementForm(None),
-            'mms': get_last_mms(),
-            'total_amount': get_total_amount(),
-            'dates': sorted([str(date) for date in dates_set])
+            'mms': mms,
+            'total_amount': total_amount,
+            'dates': sorted([str(date) for date in dates])
         }
     elif url == 'landing/tab_plan.html':
         context = {
@@ -50,7 +90,7 @@ def add_mm(request):
     if request.method == 'POST' and form.is_valid():
         form.save()
         # return JsonResponse({'html': html, 'total_amount': get_total_amount()})
-        return render(request, 'landing/mm_table.html', {'mms': get_last_mms()})
+        return render(request, 'landing/mm_table.html', {'mms': MainData().get_last_mms()})
 
     return JsonResponse({'Error': 'invalid form'})
 
@@ -68,26 +108,6 @@ def filter_by_date(request):
     return JsonResponse({'Error': 'Invalid request'})
 
 
-def get_last_mms():
-
-    # пять последних записей для отображения на странице
-    values = MoneyMovement.objects.all().reverse()[:5].values()
-    mms = [mm for mm in values]
-
-    return mms
-
-
-def get_total_amount():
-    total_amount = 0
-    for rec in MoneyMovement.objects.values('amount', 'direction'):
-        if rec['direction'] == 'income':
-            total_amount += rec['amount']
-        elif rec['direction'] == 'cost':
-            total_amount -= rec['amount']
-
-    return total_amount
-
-
 def reload_total_amount(request):
     dates_set = set(MoneyMovement.objects.values_list('date', flat=True))
 
@@ -99,6 +119,8 @@ def reload_total_amount(request):
 
 def render_tab(request):
     template = request.POST['template']
-    ctx = get_context(template)
+    month = now().month if request.POST['month'] is None else request.POST['month']
+    year = now().year if request.POST['year'] is None else request.POST['year']
+    ctx = get_context(month, year, template)
 
     return render(request, template, ctx)
