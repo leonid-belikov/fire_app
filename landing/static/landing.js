@@ -4,10 +4,6 @@
 const self = this;
 
 
-const commentArea = document.querySelector('#id_comment');
-commentArea.setAttribute('placeholder', 'Заполнять не обязательно');
-
-
 setTabHandlers();
 
 
@@ -15,6 +11,14 @@ function setTabHandlers() {
     let MMForm = document.querySelector('#mm_form');
     let MMPlanForm = document.querySelector('#mm_plan_form');
     let dateBox = document.querySelector('.date_wrapper');
+    let dateSelectForm = document.querySelector('#select_date_form');
+
+    // вынести куда-то в другое место, т.к. это не относится к данной функции по смыслу
+    let commentArea = document.querySelector('#id_comment');
+    if (commentArea) {
+        commentArea.setAttribute('placeholder', 'Заполнять не обязательно');
+    }
+
 
     let formSender = function (form, checkbox_selector, callback) {
         form.onsubmit = function (event) {
@@ -109,6 +113,30 @@ function setTabHandlers() {
                 });
             }
         };
+    }
+
+    dateSelectForm.onsubmit = function (event) {
+        event.preventDefault();
+        let currentTabTitle = document.querySelector('.tab_title.current');
+        let target = event.target;
+        let url = target.action;
+        let data = new FormData(target);
+
+        data.append('template', currentTabTitle.getAttribute('template'));
+
+        console.log(data);
+
+        fetch(url, {
+            method: 'post',
+            body: data
+        }).then(function (response) {
+            response.text().then(function(text) {
+                let tabContentBox = document.querySelector('.tab_content');
+                tabContentBox.innerHTML = text;
+                setTabHandlers();
+            });
+        });
+
     }
 }
 

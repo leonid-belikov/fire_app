@@ -1,6 +1,56 @@
-.header_title {
+header {
+    background-color: rgb(142, 142, 160);
+    position: fixed;
+    height: 90px;
     width: 100%;
-    margin: 20px auto;
+    z-index: 99999;
+    box-shadow: 0 5px 8px 0px #6f6f6f;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.header_title {
+    font-size: 40px;
+    display: flex;
+    align-self: center;
+}
+
+.date_selector {
+
+display: flex;
+align-self: center;
+}
+
+#select_date_form {
+    display: flex;
+}
+
+#select_date_form select {
+    height: 30px;
+    width: 90px;
+    font-size: 16px;
+    border-radius: 2px;
+    border: none;
+    margin-right: 5px;
+}
+
+#select_date_form input {
+    width: 60px;
+    margin-right: 5px;
+}
+
+#select_date_form button {
+    font-size: 16px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer
+}
+
+.content {
+    padding-top: 100px;
 }
 
 .tab_content section {

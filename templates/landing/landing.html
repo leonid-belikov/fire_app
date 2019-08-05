@@ -12,8 +12,27 @@
 
 
 {% block content %}
-    <h1 class="header_title">Сайт-Пупусайт</h1>
-    <div class="wrap_container">
+    <header>
+        <div class="wrap_container header">
+            <div class="header_title">Сайт-Пупусайт</div>
+            <div class="date_selector">
+                <form action="/landing/select_date/" method="post" id="select_date_form">{% csrf_token %}
+                    <select name="month">
+                        {% for month in month_list %}
+                            {% if month.current %}
+                                <option value="{{ month.value }}" selected>{{ month.name }}</option>
+                            {% else %}
+                                <option value="{{ month.value }}">{{ month.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <input type="number" name="year" value="{{ current_year }}">
+                    <button type="submit">Показать</button>
+                </form>
+            </div>
+        </div>
+    </header>
+    <div class="wrap_container content">
         <div class="tabs_header">
             <div class="tab_title" template="landing/tab_plan.html">Планируем</div>
             <div class="tab_title current" template="landing/tab_reg.html">Фиксируем</div>

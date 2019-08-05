@@ -6,6 +6,22 @@ from .tabs.plan import *
 from django.utils.timezone import now
 
 
+MONTHS = [
+    {'value': 1, 'name': 'Январь', 'current': False},
+    {'value': 2, 'name': 'Февраль', 'current': False},
+    {'value': 3, 'name': 'Март', 'current': False},
+    {'value': 4, 'name': 'Апрель', 'current': False},
+    {'value': 5, 'name': 'Май', 'current': False},
+    {'value': 6, 'name': 'Июнь', 'current': False},
+    {'value': 7, 'name': 'Июль', 'current': False},
+    {'value': 8, 'name': 'Август', 'current': False},
+    {'value': 9, 'name': 'Сентябрь', 'current': False},
+    {'value': 10, 'name': 'Октябрь', 'current': False},
+    {'value': 11, 'name': 'Ноябрь', 'current': False},
+    {'value': 12, 'name': 'Декабрь', 'current': False},
+]
+
+
 class MainData:
 
     def __init__(self, request=None):
@@ -14,7 +30,7 @@ class MainData:
         self.year = self.request.POST['year'] if self.request and self.request.POST.get('year') else now().year
 
     def get_context(self):
-        url = self.request.POST['url'] if self.request and self.request.POST.get('url') else None
+        url = self.request.POST['template'] if self.request and self.request.POST.get('template') else None
 
         if not url or url == 'landing/tab_reg.html':
             mms = self.get_last_mms()
@@ -25,7 +41,10 @@ class MainData:
                 'form': MoneyMovementForm(None),
                 'mms': mms,
                 'total_amount': total_amount,
-                'dates': sorted([str(date) for date in dates])
+                'dates': sorted([str(date) for date in dates]),
+                'month_list': self.get_month_list(),
+                'current_year': self.year,
+                # 'current_month': self.month
             }
         elif url == 'landing/tab_plan.html':
             context = {
@@ -35,11 +54,15 @@ class MainData:
                 'total_plan_income': get_total_plan_amount()['total_plan_income'],
                 'total_plan_cost': get_total_plan_amount()['total_plan_cost'],
                 'incomes': get_plan_incomes(),
-                'costs': get_plan_costs()
+                'costs': get_plan_costs(),
+                # 'current_year': self.year,
+                # 'current_month': self.month
             }
         elif url == 'landing/tab_total.html':
             context = {
-                'text': 'Посмотрим, как распеределены бабосы'
+                'text': 'Посмотрим, как распеределены бабосы',
+                # 'current_year': self.year,
+                # 'current_month': self.month
             }
         else:
             context = {}
@@ -74,6 +97,13 @@ class MainData:
                 total_amount -= rec['amount']
 
         return total_amount
+
+    def get_month_list(self):
+        month_list = MONTHS[:]
+        for month in month_list:
+            if month['value'] == self.month:
+                month['current'] = True
+        return month_list
 
 
 def landing(request):
@@ -127,3 +157,6 @@ def reload_total_amount(request):
         'total_amount': total_amount,
         'dates': sorted([str(date) for date in dates])
     })
+
+# def render_month_data(request):
+#     main_data = MainData(request)
