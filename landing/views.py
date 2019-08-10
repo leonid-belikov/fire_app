@@ -4,6 +4,7 @@ from .forms import MoneyMovementForm, MMPlanForm
 from .models import MoneyMovement
 from .tabs.plan import *
 from django.utils.timezone import now
+import datetime
 
 
 MONTHS = [
@@ -128,13 +129,41 @@ def add_mm(request):
 def filter_by_date(request):
 
     if request.method == 'POST' and request.POST.get('date') and request.POST.get('date') is not None:
-        filter_date = request.POST['date']
+        filter_date = datetime.datetime.strptime(request.POST['date'], "%Y-%m-%d")
         values = MoneyMovement.objects.filter(date=filter_date).values()
         mms = [mm for mm in values]
+        day_amounts = get_day_amounts(filter_date)
 
-        return render(request, 'landing/mm_table.html', {'mms': mms})
+        return render(request, 'landing/mm_table.html', {'mms': mms, 'day_amounts': day_amounts})
 
     return JsonResponse({'Error': 'Invalid request'})
+
+
+def get_day_amounts(date):
+    first_date = "%s-%s-01" % (date.year, date.month)
+    # сумма за день
+    day_amount = 0
+    for rec in MoneyMovement.objects.filter(date=date).values('amount', 'direction'):
+        if rec['direction'] == 'income':
+            day_amount += rec['amount']
+        elif rec['direction'] == 'cost':
+            day_amount -= rec['amount']
+    # сумма на утро
+    morning_amount = 0
+    for rec in MoneyMovement.objects.filter(date__range=[first_date, date]).\
+            exclude(date=date).values('amount', 'direction'):
+        if rec['direction'] == 'income':
+            morning_amount += rec['amount']
+        elif rec['direction'] == 'cost':
+            morning_amount -= rec['amount']
+    # сумма итого
+    result_amount = morning_amount + day_amount
+
+    return {
+        'start': morning_amount,
+        'delta': day_amount,
+        'total': result_amount
+    }
 
 
 def render_tab(request):
@@ -157,6 +186,3 @@ def reload_total_amount(request):
         'total_amount': total_amount,
         'dates': sorted([str(date) for date in dates])
     })
-
-# def render_month_data(request):
-#     main_data = MainData(request)

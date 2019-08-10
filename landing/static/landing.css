@@ -170,6 +170,19 @@ section.plan_tab {
     background: linear-gradient(90deg, rgba(0, 255, 17, 0.3), transparent, rgba(0, 255, 17, 0.3));
 }
 
+.day_amounts {
+    width: 730px;
+    margin: 20px auto;
+    font-size: 16px;
+    color: #a5a5a5;
+}
+
+.day_amounts span {
+    color: #000;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
 #mm_table {
     display: block;
     margin: 20px auto 0;

@@ -107,7 +107,7 @@ function setTabHandlers() {
                     body: data
                 }).then(function (response) {
                     response.text().then(function (text) {
-                        let mmTableBody = document.querySelector('#mm_table');
+                        let mmTableBody = document.querySelector('#mm_table_wrap');
                         mmTableBody.innerHTML = text;
                     });
                 });

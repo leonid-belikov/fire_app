@@ -1,3 +1,10 @@
+{% if day_amounts %}
+    <div class="day_amounts">
+        На утро: <span>{{ day_amounts.start }}</span>
+        За день: <span>{{ day_amounts.delta }}</span>
+        Итого: <span>{{ day_amounts.total }}</span>
+    </div>
+{% endif %}
 <table id="mm_table">
     <tbody>
         {% for mm in mms %}
