@@ -8,28 +8,28 @@
 <section class="form_section">
     <div>
         <div class="direction_checkbox">
-            <label for="direction">Income:</label>
+            <label for="direction">Доход:</label>
             <input type="checkbox" id="direction">
         </div>
         <form action="/landing/add_mm/" method="post" id="mm_form">{% csrf_token %}
             <div class="form_field">
-                <label>Date: </label>
+                <label>Дата: </label>
                 {{ form.date }}
             </div>
             <div class="form_field">
-                <label>Amount: </label>
+                <label>Сумма: </label>
                 {{ form.amount }}
             </div>
             <div class="form_field">
-                <label>Purpose: </label>
+                <label>Назначение: </label>
                 {{ form.purpose }}
             </div>
             <div class="form_field">
-                <label>Category: </label>
+                <label>Категория: </label>
                 {{ form.category }}
             </div>
             <div class="form_field comment">
-                <label>Comment: </label>
+                <label>Комментарий: </label>
                 {{ form.comment }}
             </div>
             <div>
@@ -38,13 +38,18 @@
         </form>
     </div>
 </section>
-<section class="total_chart">
-    <div class="date_wrapper">
-        {% for date in dates %}
-            <div class="date_item">{{ date }}</div>
-        {% endfor %}
-    </div>
-</section>
+{% if dates %}
+    <section class="total_chart">
+        <div class="filter_header">
+            Выберите число для просмотра всех изменений за день:
+        </div>
+        <div class="date_wrapper">
+            {% for date in dates %}
+                <div class="date_item" year="{{ date.year }}" month="{{ date.month }}">{{ date.day }}</div>
+            {% endfor %}
+        </div>
+    </section>
+{% endif %}
 <section class="mms">
     <h2>Движение средств:</h2>
     <div id="mm_table_wrap">

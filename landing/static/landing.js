@@ -71,11 +71,18 @@ function setTabHandlers() {
                 if (json['dates']) {
                     let dates = json['dates'];
                     let datesBox = document.querySelector('.date_wrapper');
+                    let dateHeader = document.querySelector('.day_header');
+                    let dateAmounts = document.querySelector('.day_amounts');
+
+                    dateHeader.style.display = 'none';
+                    dateAmounts.style.display = 'none';
                     datesBox.innerHTML = '';
                     for (let i=0; i<dates.length; i++) {
                         let dateBox = document.createElement('div');
                         dateBox.className = 'date_item';
-                        dateBox.innerText = dates[i];
+                        dateBox.innerText = dates[i]['day'];
+                        dateBox.setAttribute('month', dates[i]['month']);
+                        dateBox.setAttribute('year', dates[i]['year']);
                         datesBox.appendChild(dateBox);
                     }
                 }
@@ -97,7 +104,9 @@ function setTabHandlers() {
             if (target.className.includes('date_item')) {
                 let url = '/landing/filter_by_date/';
                 let data = new FormData;
-                data.append('date', target.innerText);
+                data.append('year', target.getAttribute('year'));
+                data.append('month', target.getAttribute('month'));
+                data.append('day', target.innerText);
                 let headers = {
                     'X-CSRFToken': self.getCSRFToken()
                 };

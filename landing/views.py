@@ -8,18 +8,18 @@ import datetime
 
 
 MONTHS = [
-    {'value': 1, 'name': 'Январь', 'current': False},
-    {'value': 2, 'name': 'Февраль', 'current': False},
-    {'value': 3, 'name': 'Март', 'current': False},
-    {'value': 4, 'name': 'Апрель', 'current': False},
-    {'value': 5, 'name': 'Май', 'current': False},
-    {'value': 6, 'name': 'Июнь', 'current': False},
-    {'value': 7, 'name': 'Июль', 'current': False},
-    {'value': 8, 'name': 'Август', 'current': False},
-    {'value': 9, 'name': 'Сентябрь', 'current': False},
-    {'value': 10, 'name': 'Октябрь', 'current': False},
-    {'value': 11, 'name': 'Ноябрь', 'current': False},
-    {'value': 12, 'name': 'Декабрь', 'current': False},
+    {'value': 1, 'name': 'Январь', 'r_date': 'января', 'current': False},
+    {'value': 2, 'name': 'Февраль', 'r_date': 'февраля', 'current': False},
+    {'value': 3, 'name': 'Март', 'r_date': 'марта', 'current': False},
+    {'value': 4, 'name': 'Апрель', 'r_date': 'апреля', 'current': False},
+    {'value': 5, 'name': 'Май', 'r_date': 'мая', 'current': False},
+    {'value': 6, 'name': 'Июнь', 'r_date': 'июня', 'current': False},
+    {'value': 7, 'name': 'Июль', 'r_date': 'июля', 'current': False},
+    {'value': 8, 'name': 'Август', 'r_date': 'августа', 'current': False},
+    {'value': 9, 'name': 'Сентябрь', 'r_date': 'сентября', 'current': False},
+    {'value': 10, 'name': 'Октябрь', 'r_date': 'октября', 'current': False},
+    {'value': 11, 'name': 'Ноябрь', 'r_date': 'ноября', 'current': False},
+    {'value': 12, 'name': 'Декабрь', 'r_date': 'декабря', 'current': False},
 ]
 
 
@@ -42,7 +42,7 @@ class MainData:
                 'form': MoneyMovementForm(None),
                 'mms': mms,
                 'total_amount': total_amount,
-                'dates': sorted([str(date) for date in dates]),
+                'dates': dates,
                 'month_list': self.get_month_list(),
                 'current_year': self.year,
                 # 'current_month': self.month
@@ -78,13 +78,24 @@ class MainData:
         ).reverse()[:5].values()
         mms = [mm for mm in values]
 
+        for mm in mms:
+            mm['date'] = mm['date'].strftime("%d.%m.%Y")
         return mms
 
     def get_dates_for_filter(self):
-        return set(MoneyMovement.objects.filter(
+        dates_set = set(MoneyMovement.objects.filter(
             date__month=self.month,
             date__year=self.year
         ).values_list('date', flat=True))
+        res = []
+        for date in sorted(dates_set):
+            row = {
+                'year': date.year,
+                'month': date.month,
+                'day': date.day
+            }
+            res.append(row)
+        return res
 
     def get_total_amount(self):
         total_amount = 0
@@ -128,13 +139,28 @@ def add_mm(request):
 
 def filter_by_date(request):
 
-    if request.method == 'POST' and request.POST.get('date') and request.POST.get('date') is not None:
-        filter_date = datetime.datetime.strptime(request.POST['date'], "%Y-%m-%d")
-        values = MoneyMovement.objects.filter(date=filter_date).values()
+    if request.method == 'POST' and request.POST.get('day') and request.POST.get('day') is not None:
+        day = request.POST.get('day')
+        month = request.POST.get('month')
+        year = request.POST.get('year')
+        str_filter_date = "%s-%s-%s" % (year, month, day)
+        filter_date = datetime.datetime.strptime(str_filter_date, "%Y-%m-%d")
+        values = MoneyMovement.objects.filter(date=filter_date).order_by('purpose').values()
+        render_month = ''
+        for m in MONTHS:
+            if m['value'] == int(month):
+                render_month = m['r_date']
+
         mms = [mm for mm in values]
         day_amounts = get_day_amounts(filter_date)
+        render_date = "%s %s %s г." % (request.POST.get('day'), render_month, year)
 
-        return render(request, 'landing/mm_table.html', {'mms': mms, 'day_amounts': day_amounts})
+        return render(request, 'landing/mm_table.html',
+                      {
+                          'mms': mms,
+                          'day_amounts': day_amounts,
+                          'render_date': render_date
+                      })
 
     return JsonResponse({'Error': 'Invalid request'})
 
@@ -184,5 +210,5 @@ def reload_total_amount(request):
 
     return JsonResponse({
         'total_amount': total_amount,
-        'dates': sorted([str(date) for date in dates])
+        'dates': dates
     })
