@@ -1,4 +1,7 @@
 {% if day_amounts %}
+    <div class="day_header">
+        {{ render_date }}
+    </div>
     <div class="day_amounts">
         На утро: <span>{{ day_amounts.start }}</span>
         За день: <span>{{ day_amounts.delta }}</span>

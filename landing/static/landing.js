@@ -97,7 +97,9 @@ function setTabHandlers() {
             if (target.className.includes('date_item')) {
                 let url = '/landing/filter_by_date/';
                 let data = new FormData;
-                data.append('date', target.innerText);
+                data.append('year', target.getAttribute('year'));
+                data.append('month', target.getAttribute('month'));
+                data.append('day', target.innerText);
                 let headers = {
                     'X-CSRFToken': self.getCSRFToken()
                 };

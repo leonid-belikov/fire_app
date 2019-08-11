@@ -94,11 +94,15 @@ section.plan_tab {
     padding: 10px 0;
 }
 
+.filter_header {
+
+}
+
 .date_item {
     background-color: #f6f9ff;
-    height: 30px;
-    margin: 0px 4px 3px;
-    width: 117px;
+    height: 35px;
+    margin: 0 6px 3px;
+    width: 75px;
     text-align: center;
     border: 1px solid #a5a5a5;
     line-height: 30px;
@@ -158,6 +162,15 @@ section.plan_tab {
 
 /*Область с таблицей данных*/
 
+.day_header {
+    margin: 20px 0 5px;
+    font-size: 25px;
+}
+
+#mm_table_wrap {
+    padding: 0 80px;
+}
+
 .mms {
     /*max-height: 400px;*/
 }
@@ -171,10 +184,10 @@ section.plan_tab {
 }
 
 .day_amounts {
-    width: 730px;
-    margin: 20px auto;
     font-size: 16px;
     color: #a5a5a5;
+    border-top: 1px solid #a5a5a5;
+    width: fit-content;
 }
 
 .day_amounts span {
@@ -186,7 +199,6 @@ section.plan_tab {
 #mm_table {
     display: block;
     margin: 20px auto 0;
-    width: 730px;
     border-collapse: collapse;
 }
 

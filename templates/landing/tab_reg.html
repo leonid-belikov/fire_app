@@ -38,13 +38,18 @@
         </form>
     </div>
 </section>
-<section class="total_chart">
-    <div class="date_wrapper">
-        {% for date in dates %}
-            <div class="date_item">{{ date }}</div>
-        {% endfor %}
-    </div>
-</section>
+{% if dates %}
+    <section class="total_chart">
+        <div class="filter_header">
+            Выберите число для просмотра всех изменений за день:
+        </div>
+        <div class="date_wrapper">
+            {% for date in dates %}
+                <div class="date_item" year="{{ date.year }}" month="{{ date.month }}">{{ date.day }}</div>
+            {% endfor %}
+        </div>
+    </section>
+{% endif %}
 <section class="mms">
     <h2>Движение средств:</h2>
     <div id="mm_table_wrap">
