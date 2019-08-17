@@ -27,11 +27,12 @@ class MainData:
 
     def __init__(self, request=None):
         self.request = request
-        self.month = self.request.POST['month'] if self.request and self.request.POST.get('month') else now().month
-        self.year = self.request.POST['year'] if self.request and self.request.POST.get('year') else now().year
+        self.day = self.request.POST['day'] if self.request and self.request.POST['day'] else now().day
+        self.month = self.request.POST['month'] if self.request and self.request.POST['month'] else now().month
+        self.year = self.request.POST['year'] if self.request and self.request.POST['year'] else now().year
 
     def get_context(self):
-        url = self.request.POST['template'] if self.request and self.request.POST.get('template') else None
+        url = self.request.POST['template'] if self.request and self.request.POST['template'] else None
 
         if not url or url == 'landing/tab_reg.html':
             mms = self.get_last_mms()
@@ -139,10 +140,10 @@ def add_mm(request):
 
 def filter_by_date(request):
 
-    if request.method == 'POST' and request.POST.get('day') and request.POST.get('day') is not None:
-        day = request.POST.get('day')
-        month = request.POST.get('month')
-        year = request.POST.get('year')
+    if request.method == 'POST' and request.POST['day'] and request.POST['day'] is not None:
+        day = request.POST['day']
+        month = request.POST['month']
+        year = request.POST['year']
         str_filter_date = "%s-%s-%s" % (year, month, day)
         filter_date = datetime.datetime.strptime(str_filter_date, "%Y-%m-%d")
         values = MoneyMovement.objects.filter(date=filter_date).values()
@@ -153,7 +154,7 @@ def filter_by_date(request):
 
         mms = [mm for mm in values]
         day_amounts = get_day_amounts(filter_date)
-        render_date = "%s %s %s г." % (request.POST.get('day'), render_month, year)
+        render_date = "%s %s %s г." % (request.POST['day'], render_month, year)
 
         return render(request, 'landing/mm_table.html',
                       {
@@ -193,7 +194,7 @@ def get_day_amounts(date):
 
 
 def render_tab(request):
-    if request.method == 'POST' and request.POST.get('template') and request.POST.get('template') is not None:
+    if request.method == 'POST' and request.POST['template'] and request.POST['template'] is not None:
         template = request.POST['template']
         main_data = MainData(request)
         ctx = main_data.get_context()
