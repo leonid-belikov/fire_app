@@ -45,7 +45,7 @@
         </div>
         <div class="date_wrapper">
             {% for date in dates %}
-                <div class="date_item" year="{{ date.year }}" month="{{ date.month }}">{{ date.day }}</div>
+                <div class="date_item" date="{{ date.date_str }}">{{ date.day }}</div>
             {% endfor %}
         </div>
     </section>

@@ -40,8 +40,8 @@ function setTabHandlers() {
 
     let MMFormCallback = function (response) {
         response.text().then(function (text) {
-            let mmTableBody = document.querySelector('#mm_table');
-            mmTableBody.innerHTML = text;
+            let mmTableWrapper = document.querySelector('#mm_table_wrap');
+            mmTableWrapper.innerHTML = text;
             reloadTotalAmountAndDates();
         });
     };
@@ -75,7 +75,8 @@ function setTabHandlers() {
                     for (let i=0; i<dates.length; i++) {
                         let dateBox = document.createElement('div');
                         dateBox.className = 'date_item';
-                        dateBox.innerText = dates[i];
+                        dateBox.innerText = dates[i]['day'];
+                        dateBox.setAttribute('date', dates[i]['date_str']);
                         datesBox.appendChild(dateBox);
                     }
                 }
@@ -97,9 +98,7 @@ function setTabHandlers() {
             if (target.className.includes('date_item')) {
                 let url = '/landing/filter_by_date/';
                 let data = new FormData;
-                data.append('year', target.getAttribute('year'));
-                data.append('month', target.getAttribute('month'));
-                data.append('day', target.innerText);
+                data.append('date', target.getAttribute('date'));
                 let headers = {
                     'X-CSRFToken': self.getCSRFToken()
                 };
@@ -125,8 +124,6 @@ function setTabHandlers() {
         let data = new FormData(target);
 
         data.append('template', currentTabTitle.getAttribute('template'));
-
-        console.log(data);
 
         fetch(url, {
             method: 'post',

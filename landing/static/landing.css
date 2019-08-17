@@ -176,7 +176,7 @@ section.plan_tab {
 }
 
 .mms td {
-    padding: 6px 10px;
+    padding: 6px 15px;
 }
 
 .income_item {
@@ -194,6 +194,8 @@ section.plan_tab {
     color: #000;
     font-size: 18px;
     margin-right: 10px;
+    width: 70px;
+    display: inline-block;
 }
 
 #mm_table {
@@ -211,7 +213,7 @@ section.plan_tab {
 }
 
 #mm_table .amount {
-    width: 100px;
+    width: 130px;
 }
 
 #mm_table td.amount {
@@ -219,7 +221,7 @@ section.plan_tab {
 }
 
 #mm_table .purpose {
-    width: 180px;
+    width: 220px;
 }
 
 #mm_table .category-text {
@@ -231,7 +233,7 @@ section.plan_tab {
 }
 
 #mm_table .comment {
-    width: 330px;
+    width: 370px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;

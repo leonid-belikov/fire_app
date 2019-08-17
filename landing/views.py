@@ -27,16 +27,29 @@ class MainData:
 
     def __init__(self, request=None):
         self.request = request
-        self.day = self.request.POST['day'] if self.request and self.request.POST['day'] else now().day
-        self.month = self.request.POST['month'] if self.request and self.request.POST['month'] else now().month
-        self.year = self.request.POST['year'] if self.request and self.request.POST['year'] else now().year
+        if not self.request:
+            msg = 'Данные запроса отсутствуют'
+            raise Warning(msg, msg)
+
+        # При выборе фильтра по дате и при корректировке MM
+        if request.POST.get('date'):
+            self.date = datetime.datetime.strptime(self.request.POST['date'], "%Y-%m-%d")
+            self.day = self.date.day
+            self.month = self.date.month
+            self.year = self.date.year
+        # При первичной загрузке и при фильтре по месяцу
+        else:
+            self.month = self.request.POST['month'] if self.request.POST.get('month') else now().month
+            self.year = self.request.POST['year'] if self.request.POST.get('year') else now().year
+            self.date = self.get_dates_for_filter()[-1]
+            self.day = self.date.day
 
     def get_context(self):
-        url = self.request.POST['template'] if self.request and self.request.POST['template'] else None
+        url = self.request.POST['template'] if self.request and self.request.POST.get('template') else None
 
         if not url or url == 'landing/tab_reg.html':
-            mms = self.get_last_mms()
-            dates = self.get_dates_for_filter()
+            mms = self.get_day_mms()
+            dates = self.get_str_dates_for_filter()
             total_amount = self.get_total_amount()
             context = {
                 'text': 'Запишем фактические доходы и расходы',
@@ -46,7 +59,8 @@ class MainData:
                 'dates': dates,
                 'month_list': self.get_month_list(),
                 'current_year': self.year,
-                # 'current_month': self.month
+                'render_date': self.get_render_date(),
+                'day_amounts': self.get_day_amounts()
             }
         elif url == 'landing/tab_plan.html':
             context = {
@@ -56,32 +70,16 @@ class MainData:
                 'total_plan_income': get_total_plan_amount()['total_plan_income'],
                 'total_plan_cost': get_total_plan_amount()['total_plan_cost'],
                 'incomes': get_plan_incomes(),
-                'costs': get_plan_costs(),
-                # 'current_year': self.year,
-                # 'current_month': self.month
+                'costs': get_plan_costs()
             }
         elif url == 'landing/tab_total.html':
             context = {
-                'text': 'Посмотрим, как распеределены бабосы',
-                # 'current_year': self.year,
-                # 'current_month': self.month
+                'text': 'Посмотрим, как распеределены бабосы'
             }
         else:
             context = {}
 
         return context
-
-    def get_last_mms(self):
-        # пять последних записей для отображения на странице
-        values = MoneyMovement.objects.filter(
-            date__month=self.month,
-            date__year=self.year
-        ).reverse()[:5].values()
-        mms = [mm for mm in values]
-
-        for mm in mms:
-            mm['date'] = mm['date'].strftime("%d.%m.%Y")
-        return mms
 
     def get_dates_for_filter(self):
         dates_set = set(MoneyMovement.objects.filter(
@@ -90,12 +88,25 @@ class MainData:
         ).values_list('date', flat=True))
         res = []
         for date in sorted(dates_set):
+            res.append(date)
+
+        return res
+
+    def get_str_dates_for_filter(self):
+        dates = self.get_dates_for_filter()
+        res = []
+        for date in dates:
+            date_str = '%s-%s-%s' % (
+                date.year,
+                date.month,
+                date.day
+            )
             row = {
-                'year': date.year,
-                'month': date.month,
+                'date_str': date_str,
                 'day': date.day
             }
             res.append(row)
+
         return res
 
     def get_total_amount(self):
@@ -116,7 +127,50 @@ class MainData:
         for month in month_list:
             if month['value'] == self.month:
                 month['current'] = True
+
         return month_list
+
+    def get_render_date(self):
+        render_month = ''
+        for m in MONTHS:
+            if m['value'] == int(self.month):
+                render_month = m['r_date']
+        render_date = "%s %s %s г." % (self.day, render_month, self.year)
+
+        return render_date
+
+    def get_day_mms(self):
+        values = MoneyMovement.objects.filter(date=self.date).values()
+        mms = [mm for mm in values]
+
+        return mms
+
+    def get_day_amounts(self):
+        date = self.date
+        first_date = "%s-%s-01" % (self.year, self.month)
+        # сумма за день
+        day_amount = 0
+        for rec in MoneyMovement.objects.filter(date=date).values('amount', 'direction'):
+            if rec['direction'] == 'income':
+                day_amount += rec['amount']
+            elif rec['direction'] == 'cost':
+                day_amount -= rec['amount']
+        # сумма на утро
+        morning_amount = 0
+        for rec in MoneyMovement.objects.filter(date__range=[first_date, date]). \
+                exclude(date=date).values('amount', 'direction'):
+            if rec['direction'] == 'income':
+                morning_amount += rec['amount']
+            elif rec['direction'] == 'cost':
+                morning_amount -= rec['amount']
+        # сумма итого
+        result_amount = morning_amount + day_amount
+
+        return {
+            'start': morning_amount,
+            'delta': day_amount,
+            'total': result_amount
+        }
 
 
 def landing(request):
@@ -133,83 +187,42 @@ def add_mm(request):
 
     if request.method == 'POST' and form.is_valid():
         form.save()
-        return render(request, 'landing/mm_table.html', {'mms': main_data.get_last_mms()})
+        return render(request, 'landing/mm_table.html', {
+                          'mms': main_data.get_day_mms(),
+                          'render_date': main_data.get_render_date(),
+                          'day_amounts': main_data.get_day_amounts()
+                      })
 
     return JsonResponse({'Error': 'invalid form'})
 
 
 def filter_by_date(request):
 
-    if request.method == 'POST' and request.POST['day'] and request.POST['day'] is not None:
-        day = request.POST['day']
-        month = request.POST['month']
-        year = request.POST['year']
-        str_filter_date = "%s-%s-%s" % (year, month, day)
-        filter_date = datetime.datetime.strptime(str_filter_date, "%Y-%m-%d")
-        values = MoneyMovement.objects.filter(date=filter_date).values()
-        render_month = ''
-        for m in MONTHS:
-            if m['value'] == int(month):
-                render_month = m['r_date']
+    print(request.POST)
+    main_data = MainData(request)
 
-        mms = [mm for mm in values]
-        day_amounts = get_day_amounts(filter_date)
-        render_date = "%s %s %s г." % (request.POST['day'], render_month, year)
-
-        return render(request, 'landing/mm_table.html',
-                      {
-                          'mms': mms,
-                          'day_amounts': day_amounts,
-                          'render_date': render_date
-                      })
-
-    return JsonResponse({'Error': 'Invalid request'})
-
-
-def get_day_amounts(date):
-    first_date = "%s-%s-01" % (date.year, date.month)
-    # сумма за день
-    day_amount = 0
-    for rec in MoneyMovement.objects.filter(date=date).values('amount', 'direction'):
-        if rec['direction'] == 'income':
-            day_amount += rec['amount']
-        elif rec['direction'] == 'cost':
-            day_amount -= rec['amount']
-    # сумма на утро
-    morning_amount = 0
-    for rec in MoneyMovement.objects.filter(date__range=[first_date, date]).\
-            exclude(date=date).values('amount', 'direction'):
-        if rec['direction'] == 'income':
-            morning_amount += rec['amount']
-        elif rec['direction'] == 'cost':
-            morning_amount -= rec['amount']
-    # сумма итого
-    result_amount = morning_amount + day_amount
-
-    return {
-        'start': morning_amount,
-        'delta': day_amount,
-        'total': result_amount
-    }
+    return render(request, 'landing/mm_table.html',
+                  {
+                      'mms': main_data.get_day_mms(),
+                      'day_amounts': main_data.get_day_amounts(),
+                      'render_date': main_data.get_render_date()
+                  })
 
 
 def render_tab(request):
-    if request.method == 'POST' and request.POST['template'] and request.POST['template'] is not None:
-        template = request.POST['template']
-        main_data = MainData(request)
-        ctx = main_data.get_context()
+    template = request.POST['template']
+    main_data = MainData(request)
+    ctx = main_data.get_context()
 
-        return render(request, template, ctx)
-
-    return JsonResponse({'Error': 'Invalid request'})
+    return render(request, template, ctx)
 
 
 def reload_total_amount(request):
     main_data = MainData(request)
-    dates = main_data.get_dates_for_filter()
+    dates = main_data.get_str_dates_for_filter()
     total_amount = main_data.get_total_amount()
 
     return JsonResponse({
         'total_amount': total_amount,
-        'dates': sorted([str(date) for date in dates])
+        'dates': dates
     })
