@@ -71,11 +71,7 @@ function setTabHandlers() {
                 if (json['dates']) {
                     let dates = json['dates'];
                     let datesBox = document.querySelector('.date_wrapper');
-                    let dateHeader = document.querySelector('.day_header');
-                    let dateAmounts = document.querySelector('.day_amounts');
 
-                    dateHeader.style.display = 'none';
-                    dateAmounts.style.display = 'none';
                     datesBox.innerHTML = '';
                     for (let i=0; i<dates.length; i++) {
                         let dateBox = document.createElement('div');
