@@ -137,8 +137,7 @@ function setTabHandlers() {
                 setTabHandlers();
             });
         });
-
-    }
+    };
 
     if (MMTable) {
         MMTable.onclick = function (event) {
