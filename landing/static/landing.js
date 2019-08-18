@@ -156,12 +156,12 @@ function setTabHandlers() {
             if (target) {
                 // соберем данные из записи
                 let mmData = {};
-                mmData['id'] = target.getAttribute('mm_id');
                 let childList = target.children;
+                mmData['id'] = parseInt(target.getAttribute('mm_id'));
                 for (let i=0; i<childList.length; i++) {
                     let child = childList[i];
                     if (child.className.includes('amount')) {
-                        mmData['amount'] = child.innerText;
+                        mmData['amount'] = parseInt(child.innerText);
                     }
                     if (child.className.includes('purpose')) {
                         for (let i=0; i<child.children.length; i++) {
@@ -178,8 +178,10 @@ function setTabHandlers() {
                         mmData['comment'] = child.innerText;
                     }
                 }
+                console.log(mmData);
                 // сгенерируем окно с формой
-                
+                let MMRowEditor = document.querySelector('.mm_editor');
+                MMRowEditor.style.display = 'block';
             }
         }
     }

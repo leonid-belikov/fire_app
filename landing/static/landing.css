@@ -183,6 +183,44 @@ section.plan_tab {
     background: linear-gradient(90deg, rgba(0, 255, 17, 0.3), transparent, rgba(0, 255, 17, 0.3));
 }
 
+.mm_editor {
+    display: none;
+    height: 52px;
+}
+
+#mm_row-form {
+    display: flex;
+    align-items: center;
+}
+
+#mm_row-form textarea {
+    resize: none;
+}
+
+#mm_row-form button {
+    margin: 20px;
+}
+
+.editor_amount {
+    width: 90px;
+    margin-right: 20px;
+    margin-left: 30px;
+}
+
+.purpose-col {
+    width: 225px;
+}
+
+.purpose-col input {
+    width: 205px;
+    margin: 2px 0;
+}
+
+.editor_comment {
+    height: 64px;
+    width: 280px;
+}
+
 .day_amounts {
     font-size: 16px;
     color: #a5a5a5;

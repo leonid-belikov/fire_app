@@ -20,3 +20,14 @@
         {% endfor %}
     </tbody>
 </table>
+<div class="mm_editor">
+    <form action="/landing/reload-mm_row/" method="post" id="mm_row-form">{% csrf_token %}
+        <input type="text" name="editor_amount" class="editor_amount">
+        <div class="purpose-col">
+            <input type="text" name="editor_purpose">
+            <input type="text" name="editor_category">
+        </div>
+        <textarea name="editor_comment" class="editor_comment"></textarea>
+        <button type="submit">V</button>
+    </form>
+</div>
