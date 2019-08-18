@@ -12,6 +12,7 @@ function setTabHandlers() {
     let MMPlanForm = document.querySelector('#mm_plan_form');
     let dateBox = document.querySelector('.date_wrapper');
     let dateSelectForm = document.querySelector('#select_date_form');
+    let MMTable = document.querySelector('#mm_table');
 
     // вынести куда-то в другое место, т.к. это не относится к данной функции по смыслу
     let commentArea = document.querySelector('#id_comment');
@@ -137,6 +138,51 @@ function setTabHandlers() {
             });
         });
 
+    }
+
+    if (MMTable) {
+        MMTable.onclick = function (event) {
+            let target = event.target;
+            while (true) {
+                if (target.className.includes('tab_content')) {
+                    target = null;
+                    break;
+                }
+                if (target.className.includes('mm_row')) {
+                    break;
+                } else {
+                    target = target.parentElement;
+                }
+            }
+            if (target) {
+                // соберем данные из записи
+                let mmData = {};
+                mmData['id'] = target.getAttribute('mm_id');
+                let childList = target.children;
+                for (let i=0; i<childList.length; i++) {
+                    let child = childList[i];
+                    if (child.className.includes('amount')) {
+                        mmData['amount'] = child.innerText;
+                    }
+                    if (child.className.includes('purpose')) {
+                        for (let i=0; i<child.children.length; i++) {
+                            let elem = child.children[i];
+                            if (elem.className.includes('purpose-text')) {
+                                mmData['purpose'] = elem.innerText;
+                            }
+                            if (elem.className.includes('category-text')) {
+                                mmData['category'] = elem.innerText;
+                            }
+                        }
+                    }
+                    if (child.className.includes('comment')) {
+                        mmData['comment'] = child.innerText;
+                    }
+                }
+                // сгенерируем окно с формой
+                
+            }
+        }
     }
 }
 

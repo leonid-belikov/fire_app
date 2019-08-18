@@ -9,7 +9,7 @@
 <table id="mm_table">
     <tbody>
         {% for mm in mms %}
-            <tr mm_id="{{ mm.id }}" class="{% if mm.direction == 'income' %}income_item{% endif %}">
+            <tr mm_id="{{ mm.id }}" class="mm_row {% if mm.direction == 'income' %}income_item{% endif %}">
                 <td class="amount">{{ mm.amount }}</td>
                 <td class="purpose">
                     <div class="purpose-text">{{ mm.purpose }}</div>
