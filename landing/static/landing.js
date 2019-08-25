@@ -142,10 +142,14 @@ function setTabHandlers() {
     if (MMTable) {
         MMTable.onclick = function (event) {
             let target = event.target;
+            let focusName = '';
             while (true) {
                 if (target.className.includes('tab_content')) {
                     target = null;
                     break;
+                }
+                if (target.className.includes('mm_data')) {
+                    focusName = target.getAttribute('mm_data_name');
                 }
                 if (target.className.includes('mm_row')) {
                     break;
@@ -154,6 +158,10 @@ function setTabHandlers() {
                 }
             }
             if (target) {
+                // удалим уже открытый редактор, если он есть
+                let activeEditor = MMTable.querySelector('.mm_editor');
+                if (activeEditor)
+                    activeEditor.remove();
                 // соберем данные из записи
                 let mmData = {};
                 let childList = target.children;
@@ -161,15 +169,15 @@ function setTabHandlers() {
                 for (let i=0; i<childList.length; i++) {
                     let child = childList[i];
                     if (child.className.includes('amount')) {
-                        mmData['amount'] = parseInt(child.innerText);
+                        mmData['amount'] = child.innerText;
                     }
-                    if (child.className.includes('purpose')) {
+                    if (child.className.includes('purpose_wrap')) {
                         for (let i=0; i<child.children.length; i++) {
                             let elem = child.children[i];
-                            if (elem.className.includes('purpose-text')) {
+                            if (elem.className.includes('purpose')) {
                                 mmData['purpose'] = elem.innerText;
                             }
-                            if (elem.className.includes('category-text')) {
+                            if (elem.className.includes('category')) {
                                 mmData['category'] = elem.innerText;
                             }
                         }
@@ -180,8 +188,25 @@ function setTabHandlers() {
                 }
                 console.log(mmData);
                 // сгенерируем окно с формой
-                let MMRowEditor = document.querySelector('.mm_editor');
+                let MMRowEditor = document.querySelector('.mm_editor').cloneNode(true);
+                let amountBox = MMRowEditor.querySelector('.editor_amount');
+                let purposeBox = MMRowEditor.querySelector('.editor_purpose');
+                let categoryBox = MMRowEditor.querySelector('.editor_category');
+                let commentBox = MMRowEditor.querySelector('.editor_comment');
+                let td = MMTable.querySelector('td.editor');
+                amountBox.setAttribute('value', mmData['amount']);
+                purposeBox.setAttribute('value', mmData['purpose']);
+                categoryBox.setAttribute('value', mmData['category']);
+                commentBox.innerText = mmData['comment'];
+                MMRowEditor.style.top = target.offsetTop + 'px';
+                MMRowEditor.style.left = target.offsetLeft + 'px';
                 MMRowEditor.style.display = 'block';
+                td.appendChild(MMRowEditor);
+                // установим фокус на поле, по которому был клик
+                if (focusName) {
+                    let focusClassSelector = '.editor_' + focusName;
+                    MMRowEditor.querySelector(focusClassSelector).focus();
+                }
             }
         }
     }
