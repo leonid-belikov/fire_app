@@ -25,4 +25,5 @@ urlpatterns = [
     path('reload_total_amount/', views.reload_total_amount, name='reload_total_amount'),
     path('add_mmplan/', plan.add_mmplan, name='add_mmplan'),
     path('select_date/', views.render_tab, name='render_tab'),
+    path('reload_mm_row/', views.reload_mm_row, name='reload_mm_row'),
 ]

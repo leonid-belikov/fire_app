@@ -1,0 +1,8 @@
+<tr mm_id="{{ mm.id }}" class="mm_row {% if mm.direction == 'income' %}income_item{% endif %}">
+    <td class="mm_data amount" mm_data_name="amount">{{ mm.amount }}</td>
+    <td class="purpose_wrap">
+        <div class="mm_data purpose" mm_data_name="purpose">{{ mm.purpose }}</div>
+        <div class="mm_data category" mm_data_name="category">{{ mm.category }}</div>
+    </td>
+    <td class="mm_data comment" title="{{ mm.comment }}" mm_data_name="comment">{{ mm.comment }}</td>
+</tr>

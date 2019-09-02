@@ -9,14 +9,7 @@
 <table id="mm_table">
     <tbody>
         {% for mm in mms %}
-            <tr mm_id="{{ mm.id }}" class="mm_row {% if mm.direction == 'income' %}income_item{% endif %}">
-                <td class="mm_data amount" mm_data_name="amount">{{ mm.amount }}</td>
-                <td class="purpose_wrap">
-                    <div class="mm_data purpose" mm_data_name="purpose">{{ mm.purpose }}</div>
-                    <div class="mm_data category" mm_data_name="category">{{ mm.category }}</div>
-                </td>
-                <td class="mm_data comment" title="{{ mm.comment }}" mm_data_name="comment">{{ mm.comment }}</td>
-            </tr>
+            {% include 'landing/mm_table_row.html' %}
         {% endfor %}
         <tr class="editor">
             <td class="editor"></td>
@@ -24,13 +17,13 @@
     </tbody>
 </table>
 <div class="mm_editor">
-    <form action="/landing/reload-mm_row/" method="post" id="mm_row-form">{% csrf_token %}
-        <input type="text" name="editor_amount" class="editor_amount">
+    <form action="/landing/reload_mm_row/" method="post" id="mm_row_form">{% csrf_token %}
+        <input type="text" name="amount" class="editor_amount">
         <div class="purpose-col">
-            <input type="text" name="editor_purpose" class="editor_purpose">
-            <input type="text" name="editor_category" class="editor_category">
+            <input type="text" name="purpose" class="editor_purpose">
+            <input type="text" name="category" class="editor_category">
         </div>
-        <textarea name="editor_comment" class="editor_comment"></textarea>
+        <textarea name="comment" class="editor_comment"></textarea>
         <button type="submit">V</button>
     </form>
 </div>

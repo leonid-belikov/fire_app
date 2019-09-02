@@ -190,23 +190,23 @@ section.plan_tab {
     height: 56px;
 }
 
-#mm_row-form {
+#mm_row_form {
     display: flex;
     align-items: center;
     height: 100%;
 }
 
-#mm_row-form input {
+#mm_row_form input {
     height: 20px;
     padding: 0 5px;
     font-size: 18px;
 }
 
-#mm_row-form textarea {
+#mm_row_form textarea {
     /* resize: none; */
 }
 
-#mm_row-form button {
+#mm_row_form button {
     margin: 15px;
     margin-left: 20px;
 }
@@ -219,10 +219,16 @@ section.plan_tab {
 }
 
 .editor_purpose {
-    margin-top: 7px;
 }
 
-#mm_row-form .editor_category {
+.editor_comment {
+    height: 51px;
+    width: 287px;
+    resize: none;
+    font-size: 18px;
+}
+
+#mm_row_form .editor_category {
     font-size: 14px;
 }
 
@@ -234,13 +240,6 @@ section.plan_tab {
 
 .purpose-col input {
     width: 100%;
-}
-
-.editor_comment {
-    height: 45px;
-    width: 287px;
-    resize: none;
-    font-size: 18px;
 }
 
 .day_amounts {
@@ -309,6 +308,14 @@ section.plan_tab {
 
 #mm_table td.editor {
     padding: 0;
+}
+
+.mm_data.purpose {
+    margin-bottom: 4px;
+}
+
+.mm_data.category {
+    margin-bottom: 2px;
 }
 
 .plan_table_wrap {

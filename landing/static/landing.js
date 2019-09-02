@@ -141,31 +141,31 @@ function setTabHandlers() {
 
     if (MMTable) {
         MMTable.onclick = function (event) {
-            let target = event.target;
+            let targetRow = event.target;
             let focusName = '';
             while (true) {
-                if (target.className.includes('tab_content')) {
-                    target = null;
+                if (targetRow.className.includes('tab_content')) {
+                    targetRow = null;
                     break;
                 }
-                if (target.className.includes('mm_data')) {
-                    focusName = target.getAttribute('mm_data_name');
+                if (targetRow.className.includes('mm_data')) {
+                    focusName = targetRow.getAttribute('mm_data_name');
                 }
-                if (target.className.includes('mm_row')) {
+                if (targetRow.className.includes('mm_row')) {
                     break;
                 } else {
-                    target = target.parentElement;
+                    targetRow = targetRow.parentElement;
                 }
             }
-            if (target) {
+            if (targetRow) {
                 // удалим уже открытый редактор, если он есть
                 let activeEditor = MMTable.querySelector('.mm_editor');
                 if (activeEditor)
                     activeEditor.remove();
                 // соберем данные из записи
                 let mmData = {};
-                let childList = target.children;
-                mmData['id'] = parseInt(target.getAttribute('mm_id'));
+                let childList = targetRow.children;
+                mmData['id'] = targetRow.getAttribute('mm_id');
                 for (let i=0; i<childList.length; i++) {
                     let child = childList[i];
                     if (child.className.includes('amount')) {
@@ -186,7 +186,6 @@ function setTabHandlers() {
                         mmData['comment'] = child.innerText;
                     }
                 }
-                console.log(mmData);
                 // сгенерируем окно с формой
                 let MMRowEditor = document.querySelector('.mm_editor').cloneNode(true);
                 let amountBox = MMRowEditor.querySelector('.editor_amount');
@@ -198,14 +197,45 @@ function setTabHandlers() {
                 purposeBox.setAttribute('value', mmData['purpose']);
                 categoryBox.setAttribute('value', mmData['category']);
                 commentBox.innerText = mmData['comment'];
-                MMRowEditor.style.top = target.offsetTop + 'px';
-                MMRowEditor.style.left = target.offsetLeft + 'px';
+                MMRowEditor.style.top = targetRow.offsetTop + 'px';
+                MMRowEditor.style.left = targetRow.offsetLeft + 'px';
                 MMRowEditor.style.display = 'block';
                 td.appendChild(MMRowEditor);
                 // установим фокус на поле, по которому был клик
                 if (focusName) {
                     let focusClassSelector = '.editor_' + focusName;
                     MMRowEditor.querySelector(focusClassSelector).focus();
+                }
+                // обработаем клик по кнопке "V"
+                let MMRowForm = document.querySelector('#mm_row_form');
+                MMRowForm.onsubmit = function (event) {
+                    event.preventDefault();
+                    MMRowEditor.remove();
+                    let target = event.target;
+                    let url = target.action;
+                    let formData = new FormData(target);
+                    let dataIsNotEmpty = false;
+                    let data = new FormData();
+                    for (let [name, value] of formData) {
+                        if (mmData.hasOwnProperty(name) && mmData[name] !== value) {
+                            data.append(name, value);
+                            dataIsNotEmpty = true;
+                        }
+                    }
+                    if (dataIsNotEmpty) {
+                        data.append('csrfmiddlewaretoken', formData.get('csrfmiddlewaretoken'));
+                        data.append('id', mmData['id']);
+
+                        fetch(url, {
+                            method: 'post',
+                            body: data
+                        }).then(function (response) {
+                            response.text().then(function(text) {
+                                targetRow.innerHTML = text;
+                            });
+                        });
+
+                    }
                 }
             }
         }
