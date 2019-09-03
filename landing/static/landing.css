@@ -194,6 +194,7 @@ section.plan_tab {
     display: flex;
     align-items: center;
     height: 100%;
+    position: relative;
 }
 
 #mm_row_form input {
@@ -207,8 +208,50 @@ section.plan_tab {
 }
 
 #mm_row_form button {
-    margin: 15px;
-    margin-left: 20px;
+    margin: 0;
+    margin-left: 5px;
+    height: 32px;
+    width: 32px;
+    background: none;
+    border: none;
+    background-size: cover;
+    transition-duration: 300ms;
+}
+
+#mm_row_form button:hover {
+    transform: translateY(-4px);
+    transition-duration: 300ms;
+}
+
+#mm_row_form button.submit {
+    background-image: url('/static/img/icons8-ok-48.png');
+    margin-left: 1px;
+}
+
+#mm_row_form button.reset {
+    background-image: url('/static/img/icons8-reset-48.png');
+}
+
+#mm_row_form button.close {
+    background-image: url('/static/img/icons8-delete-48.png');
+}
+
+#mm_row_form button.delete {
+    background-image: url('/static/img/icons8-trash-48.png');
+    margin-left: 0;
+}
+
+#mm_row_form .buttons {
+    position: absolute;
+    right: -30px;
+    top: -36px;
+    display: flex;
+    box-shadow: 5px 5px 10px 0px #929292;
+    background: hsla(240, 9%, 104%, 1);
+    border-radius: 20px;
+    padding: 0 10px;
+    height: 40px;
+    align-items: center;
 }
 
 .editor_amount {
@@ -223,7 +266,7 @@ section.plan_tab {
 
 .editor_comment {
     height: 51px;
-    width: 287px;
+    width: 360px;
     resize: none;
     font-size: 18px;
 }

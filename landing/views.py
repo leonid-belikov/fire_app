@@ -66,7 +66,6 @@ def reload_mm_row(request):
     for name in request.POST:
         if name not in exclude_fields:
             setattr(row, name, request.POST[name])
-            print(name)
     row.save()
     # TODO: поискать способ сделать поумнее
     row_dict = {
