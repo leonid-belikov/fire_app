@@ -209,9 +209,9 @@ section.plan_tab {
 
 #mm_row_form button {
     margin: 0;
-    margin-left: 5px;
-    height: 32px;
-    width: 32px;
+    margin-left: 8px;
+    height: 28px;
+    width: 28px;
     background: none;
     border: none;
     background-size: cover;
@@ -223,6 +223,10 @@ section.plan_tab {
     transition-duration: 300ms;
 }
 
+#mm_row_form button:focus {
+    outline: none;
+}
+
 #mm_row_form button.submit {
     background-image: url('/static/img/icons8-ok-48.png');
     margin-left: 1px;
@@ -230,6 +234,8 @@ section.plan_tab {
 
 #mm_row_form button.reset {
     background-image: url('/static/img/icons8-reset-48.png');
+    width: 24px;
+    height: 24px;
 }
 
 #mm_row_form button.close {
@@ -238,19 +244,21 @@ section.plan_tab {
 
 #mm_row_form button.delete {
     background-image: url('/static/img/icons8-trash-48.png');
-    margin-left: 0;
+    margin-left: 4px;
+    height: 24px;
+    width: 24px;
 }
 
 #mm_row_form .buttons {
     position: absolute;
     right: -30px;
-    top: -36px;
+    top: -32px;
     display: flex;
     box-shadow: 5px 5px 10px 0px #929292;
     background: hsla(240, 9%, 104%, 1);
-    border-radius: 20px;
+    border-radius: 17px;
     padding: 0 10px;
-    height: 40px;
+    height: 34px;
     align-items: center;
 }
 
@@ -271,8 +279,12 @@ section.plan_tab {
     font-size: 18px;
 }
 
-#mm_row_form .editor_category {
+.editor_category {
     font-size: 14px;
+}
+
+#mm_row_form input:focus, #mm_row_form textarea:focus {
+    outline: none;
 }
 
 .purpose-col {
@@ -341,6 +353,7 @@ section.plan_tab {
     display: block;
     padding-bottom: 15px;
     padding-top: 15px;
+    height: inherit;
 }
 
 #mm_table tr.editor {

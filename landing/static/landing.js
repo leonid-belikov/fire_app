@@ -82,6 +82,7 @@ function setTabHandlers() {
                         datesBox.appendChild(dateBox);
                     }
                 }
+                setTabHandlers();
             })
         })
     };
@@ -118,6 +119,7 @@ function setTabHandlers() {
         };
     }
 
+    // Выбор месяца и года в шапке
     dateSelectForm.onsubmit = function (event) {
         event.preventDefault();
         let currentTabTitle = document.querySelector('.tab_title.current');
@@ -144,6 +146,9 @@ function setTabHandlers() {
             let targetRow = event.target;
             let focusName = '';
             while (true) {
+                if (!targetRow) {
+                    break;
+                }
                 if (targetRow.className.includes('tab_content')) {
                     targetRow = null;
                     break;
@@ -206,16 +211,16 @@ function setTabHandlers() {
                     let focusClassSelector = '.editor_' + focusName;
                     MMRowEditor.querySelector(focusClassSelector).focus();
                 }
-                // обработаем клик по кнопке "V"
+                // обработаем клик по кнопке "V" - проверим, были ли изменения:
+                // если да - обновим строку, если нет - просто закроем редактор
                 let MMRowForm = document.querySelector('#mm_row_form');
                 MMRowForm.onsubmit = function (event) {
                     event.preventDefault();
-                    MMRowEditor.remove();
                     let target = event.target;
                     let url = target.action;
                     let formData = new FormData(target);
-                    let dataIsNotEmpty = false;
                     let data = new FormData();
+                    let dataIsNotEmpty = false;
                     for (let [name, value] of formData) {
                         if (mmData.hasOwnProperty(name) && mmData[name] !== value) {
                             data.append(name, value);
@@ -223,19 +228,53 @@ function setTabHandlers() {
                         }
                     }
                     if (dataIsNotEmpty) {
-                        data.append('csrfmiddlewaretoken', formData.get('csrfmiddlewaretoken'));
+                        let headers = {
+                            'X-CSRFToken': self.getCSRFToken()
+                        };
                         data.append('id', mmData['id']);
 
                         fetch(url, {
                             method: 'post',
+                            headers: headers,
                             body: data
                         }).then(function (response) {
                             response.text().then(function(text) {
                                 targetRow.innerHTML = text;
+                                MMRowEditor.remove();
                             });
                         });
 
+                    } else {
+                        MMRowEditor.remove();
                     }
+                };
+
+                // обработаем клик по кнопке "Х" - закроем редактор
+                let closeButton = document.querySelector('#mm_row_form button.close');
+                closeButton.onclick = function (event) {
+                    MMRowEditor.remove();
+                };
+
+                // обработаем клик по кнопке "Удалить"
+                let deleteButton = document.querySelector('#mm_row_form button.delete');
+                deleteButton.onclick = function (event) {
+                    let url = '/landing/delete_mm_row/';
+                    let data = new FormData;
+                    data.append('id', mmData['id']);
+                    let headers = {
+                        'X-CSRFToken': self.getCSRFToken()
+                    };
+                    fetch(url, {
+                        method: 'post',
+                        headers: headers,
+                        body: data
+                    }).then(function (response) {
+                        response.text().then(function (text) {
+                            let mmTableBody = document.querySelector('#mm_table_wrap');
+                            mmTableBody.innerHTML = text;
+                            reloadTotalAmountAndDates();
+                        });
+                    });
                 }
             }
         }

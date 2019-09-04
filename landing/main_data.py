@@ -25,14 +25,21 @@ MONTHS = [
 
 class MainData:
 
-    def __init__(self, request=None):
+    def __init__(self, request=None, date=None):
         self.request = request
-        if not self.request:
+        if not self.request and not date:
             msg = 'Данные запроса отсутствуют'
             raise Warning(msg, msg)
 
+        # При удалении ММ
+        elif date:
+            self.date = date
+            self.day = self.date.day
+            self.month = self.date.month
+            self.year = self.date.year
+
         # При выборе фильтра по дате и при корректировке MM
-        if request.POST.get('date'):
+        elif request.POST.get('date'):
             self.date = datetime.datetime.strptime(self.request.POST['date'], "%Y-%m-%d")
             self.day = self.date.day
             self.month = self.date.month
@@ -48,15 +55,12 @@ class MainData:
         url = self.request.POST['template'] if self.request and self.request.POST.get('template') else None
 
         if not url or url == 'landing/tab_reg.html':
-            mms = self.get_day_mms()
-            dates = self.get_str_dates_for_filter()
-            total_amount = self.get_total_amount()
             context = {
                 'text': 'Запишем фактические доходы и расходы',
                 'form': MoneyMovementForm(None),
-                'mms': mms,
-                'total_amount': total_amount,
-                'dates': dates,
+                'mms': self.get_day_mms(),
+                'total_amount': self.get_total_amount(),
+                'dates': self.get_str_dates_for_filter(),
                 'month_list': self.get_month_list(),
                 'current_year': self.year,
                 'render_date': self.get_render_date(),

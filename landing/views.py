@@ -15,6 +15,7 @@ def landing(request):
 
 def add_mm(request):
     main_data = MainData(request)
+    print(request.POST)
 
     form = MoneyMovementForm(request.POST or None)
 
@@ -78,3 +79,16 @@ def reload_mm_row(request):
     }
 
     return render(request, 'landing/mm_table_row.html', {'mm': row_dict})
+
+
+def delete_mm_row(request):
+    row_id = request.POST.get('id')
+    if row_id:
+        date = MoneyMovement.objects.get(id=row_id).date
+        MoneyMovement.objects.filter(id=row_id).delete()
+        main_data = MainData(date=date)
+        return render(request, 'landing/mm_table.html', {
+                          'mms': main_data.get_day_mms(),
+                          'render_date': main_data.get_render_date(),
+                          'day_amounts': main_data.get_day_amounts()
+                      })
