@@ -5,61 +5,40 @@
 }
 
 body {
-    background-image: url('/static/img/body_bg2.png');
     background-size: cover;
     background-attachment: fixed;
     padding-bottom: 70px;
     font-size: 18px;
     overflow-y: scroll;
     background-repeat: no-repeat;
-    background-color: darkgray;
+    background-color: #dcd9e0;
+    background-image: url('img/bg_2.jpg');
+    background-position-y: 110px;
 }
 
 .wrap_container {
-    /* background-color: rgba(236, 239, 241, 0.7); */
     width: 900px;
     margin: 0 auto;
     height: 100%;
-    /* padding: 0 10px; */
-    /* padding-bottom: 30px; */
 }
 
-section {
-    padding: 5px 15px;
-    /* border: 1px solid #000; */
-    margin: 13px 0;
-    border-radius: 2px;
-}
-section:last-child {
-    /* margin-bottom: 30px; */
-}
 section.section_title h2 {
     background: linear-gradient(-45deg, #848484, #d0d0f9 20%, #353535 70%, #353535);
     color: #eceff1;
 }
 section h2 {
     position: relative;
-    width: 500px;
-    left: -25px;
-    top: -5px;
     padding: 5px 15px 10px;
-    background: linear-gradient(-45deg, #848484, #d0d0f9 20%, #bfbfbf);
-    color: #000;
-    box-shadow: 5px 5px 8px -2px #4c4c4c;
+    /* background: linear-gradient(90deg, #c7addd, rgba(255, 255, 255, 0.5) 39%, rgba(255, 255, 255, 0.5)); */
+    color: #40225a;
     font-weight: 400;
+    height: 50px;
+    font-size: 24px;
+    border-bottom: 1px solid;
 }
-section h2:after {
-    content: '';
-    display: block;
-    position: absolute;
-    height: 49px;
-    width: 50px;
-    top: 0;
-    left: 0;
-    background: #000;
-    z-index: -1;
-    transform: skewY(29deg);
-    transform-origin: left;
+
+.section_content {
+    padding: 10px;
 }
 
 h1 {

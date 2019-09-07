@@ -1,7 +1,8 @@
 'use strict';
 
 
-const self = this;
+let currentMonth;
+let currentYear;
 
 
 setTabHandlers();
@@ -14,10 +15,23 @@ function setTabHandlers() {
     let dateSelectForm = document.querySelector('#select_date_form');
     let MMTable = document.querySelector('#mm_table');
 
-    // вынести куда-то в другое место, т.к. это не относится к данной функции по смыслу
+    // TODO: вынести куда-то в другое место, т.к. это не относится к данной функции
+    //  по смыслу. Переделать в цикл.
     let commentArea = document.querySelector('#id_comment');
+    let amountArea = document.querySelector('#id_amount');
+    let purposeArea = document.querySelector('#id_purpose');
+    let categoryArea = document.querySelector('#id_category');
     if (commentArea) {
-        commentArea.setAttribute('placeholder', 'Заполнять не обязательно');
+        commentArea.setAttribute('placeholder', 'Комментарий (заполнять не обязательно)');
+    }
+    if (amountArea) {
+        amountArea.setAttribute('placeholder', 'Сумма');
+    }
+    if (purposeArea) {
+        purposeArea.setAttribute('placeholder', 'Назначение');
+    }
+    if (categoryArea) {
+        categoryArea.setAttribute('placeholder', 'Категория');
     }
 
 
@@ -58,7 +72,7 @@ function setTabHandlers() {
     let reloadTotalAmountAndDates = function () {
         let url = '/landing/reload_total_amount/';
         let headers = {
-            'X-CSRFToken': self.getCSRFToken()
+            'X-CSRFToken': getCSRFToken()
         };
         fetch(url, {
             method: 'post',
@@ -87,14 +101,17 @@ function setTabHandlers() {
         })
     };
 
+    // Добавить новое фактическое движение средств
     if (MMForm) {
         formSender(MMForm, '#direction', MMFormCallback);
     }
 
+    // Добавить новое плановое движение средств
     if (MMPlanForm) {
         formSender(MMPlanForm, '#plan_direction', MMPlanFormCallback);
     }
 
+    // Выбор даты в фильтре по датам
     if (dateBox) {
         dateBox.onclick = function (event) {
             let target = event.target;
@@ -103,7 +120,7 @@ function setTabHandlers() {
                 let data = new FormData;
                 data.append('date', target.getAttribute('date'));
                 let headers = {
-                    'X-CSRFToken': self.getCSRFToken()
+                    'X-CSRFToken': getCSRFToken()
                 };
                 fetch(url, {
                     method: 'post',
@@ -127,6 +144,9 @@ function setTabHandlers() {
         let url = target.action;
         let data = new FormData(target);
 
+        currentMonth = data.get('month');
+        currentYear = data.get('year');
+
         data.append('template', currentTabTitle.getAttribute('template'));
 
         fetch(url, {
@@ -141,6 +161,7 @@ function setTabHandlers() {
         });
     };
 
+    // Клик по таблице с фактическими движениями средств, редактор по месту
     if (MMTable) {
         MMTable.onclick = function (event) {
             let targetRow = event.target;
@@ -229,7 +250,7 @@ function setTabHandlers() {
                     }
                     if (dataIsNotEmpty) {
                         let headers = {
-                            'X-CSRFToken': self.getCSRFToken()
+                            'X-CSRFToken': getCSRFToken()
                         };
                         data.append('id', mmData['id']);
 
@@ -262,7 +283,7 @@ function setTabHandlers() {
                     let data = new FormData;
                     data.append('id', mmData['id']);
                     let headers = {
-                        'X-CSRFToken': self.getCSRFToken()
+                        'X-CSRFToken': getCSRFToken()
                     };
                     fetch(url, {
                         method: 'post',
@@ -296,6 +317,7 @@ function getCSRFToken() {
 
 const tabTitlesBox = document.querySelector('.tabs_header');
 
+// Клик по заголовку вкладки
 tabTitlesBox.onclick = function (event) {
     let target = event.target;
     if (target.className.includes('tab_title')) {
@@ -303,14 +325,18 @@ tabTitlesBox.onclick = function (event) {
         let url = '/landing/tab/';
         let data = new FormData;
 
-        //Перебросим класс заголовка текущей вкладки
+        // Перебросим класс заголовка текущей вкладки
         currentTabTitle.classList.remove('current');
         target.classList.add('current');
 
-        //Обновим контент вкладки
+        // Обновим контент вкладки
         data.append('template', target.getAttribute('template'));
+        if (currentMonth && currentYear) {
+            data.append('month', currentMonth);
+            data.append('year', currentYear);
+        }
         let headers = {
-            'X-CSRFToken': self.getCSRFToken()
+            'X-CSRFToken': getCSRFToken()
         };
         fetch(url, {
             method: 'post',

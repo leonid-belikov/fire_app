@@ -1,58 +1,65 @@
-<section class="section_title">
-    <h2>Фиксирование</h2>
-    <p>{{ text }}</p>
-</section>
+{#<section class="section_title">#}
+{#    <h2>Фиксирование</h2>#}
+{#    <p>{{ text }}</p>#}
+{#</section>#}
 <section class="total_info">
-    <div class="total_info-text">Общая сумма: <span id="total_amount">{{ total_amount }}</span> р.</div>
+    <div class="total_info-text">Общая сумма: <span id="total_amount">{{ total_amount }}</span></div>
 </section>
-<section class="form_section">
-    <div>
-        <div class="direction_checkbox">
-            <label for="direction">Доход:</label>
-            <input type="checkbox" id="direction">
-        </div>
-        <form action="/landing/add_mm/" method="post" id="mm_form">{% csrf_token %}
-            <div class="form_field">
-                <label>Дата: </label>
-                {{ form.date }}
+<div class="mm_box">
+    <div class="sidebar">
+        <section class="form_section">
+{#            <h2></h2>#}
+            <div class="section_content">
+                <div>
+                    <div class="direction_checkbox">
+                        <label for="direction">Доход:</label>
+                        <input type="checkbox" id="direction">
+                    </div>
+                    <form action="/landing/add_mm/" method="post" id="mm_form">{% csrf_token %}
+                        <div class="form_field">
+                            {{ form.date }}
+                        </div>
+                        <div class="form_field">
+                            {{ form.amount }}
+                        </div>
+                        <div class="form_field">
+                            {{ form.purpose }}
+                        </div>
+                        <div class="form_field">
+                            {{ form.category }}
+                        </div>
+                        <div class="form_field comment">
+                            {{ form.comment }}
+                        </div>
+                        <div>
+                            <button type="submit">Добавить</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form_field">
-                <label>Сумма: </label>
-                {{ form.amount }}
-            </div>
-            <div class="form_field">
-                <label>Назначение: </label>
-                {{ form.purpose }}
-            </div>
-            <div class="form_field">
-                <label>Категория: </label>
-                {{ form.category }}
-            </div>
-            <div class="form_field comment">
-                <label>Комментарий: </label>
-                {{ form.comment }}
-            </div>
-            <div>
-                <button type="submit">Добавить</button>
-            </div>
-        </form>
+        </section>
+        {% if dates %}
+            <section class="total_chart">
+{#                <h2></h2>#}
+                <div class="section_content">
+                    <div class="filter_header">
+                        Выберите день:
+                    </div>
+                    <div class="date_wrapper">
+                        {% for date in dates %}
+                            <div class="date_item" date="{{ date.date_str }}">{{ date.day }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        {% endif %}
     </div>
-</section>
-{% if dates %}
-    <section class="total_chart">
-        <div class="filter_header">
-            Выберите число для просмотра всех изменений за день:
-        </div>
-        <div class="date_wrapper">
-            {% for date in dates %}
-                <div class="date_item" date="{{ date.date_str }}">{{ date.day }}</div>
-            {% endfor %}
+    <section class="mms">
+{#        <h2>Движение средств:</h2>#}
+        <div class="section_content">
+            <div id="mm_table_wrap">
+                {% include 'landing/mm_table.html' %}
+            </div>
         </div>
     </section>
-{% endif %}
-<section class="mms">
-    <h2>Движение средств:</h2>
-    <div id="mm_table_wrap">
-        {% include 'landing/mm_table.html' %}
-    </div>
-</section>
+</div>

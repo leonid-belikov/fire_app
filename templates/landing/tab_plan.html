@@ -1,42 +1,44 @@
-<section class="section_title plan_tab">
-    <h2>Планирование</h2>
-    <p>{{ text }}</p>
-</section>
+{#<section class="section_title plan_tab">#}
+{#    <h2>Планирование</h2>#}
+{#    <p>{{ text }}</p>#}
+{#</section>#}
 <section class="total_info">
-    <div class="total_info-text">Планируемый остаток: <span id="total_plan_amount">{{ total_plan_amount }}</span> р.</div>
+    <div class="total_info-text">Планируемый остаток: <span id="total_plan_amount">{{ total_plan_amount }}</span></div>
 </section>
 <section class="form_section">
-    <div>
+    <div class="section_content form_wrapper">
         <div class="direction_checkbox">
             <label for="direction">Income:</label>
             <input type="checkbox" id="plan_direction">
         </div>
         <form action="/landing/add_mmplan/" method="post" id="mm_plan_form">{% csrf_token %}
-            <div class="form_field">
-                <label>Amount: </label>
-                {{ form.amount }}
+            <div class="first_col">
+                <div class="first_row">
+                    <div class="form_field amount">
+        {#                <label>Amount: </label>#}
+                        {{ form.amount }}
+                    </div>
+                    <div class="form_field purpose">
+        {#                <label>Purpose: </label>#}
+                        {{ form.purpose }}
+                    </div>
+                    <div class="form_field category">
+        {#                <label>Category: </label>#}
+                        {{ form.category }}
+                    </div>
+                </div>
+                <div class="form_field comment">
+    {#                <label>Comment: </label>#}
+                    {{ form.comment }}
+                </div>
             </div>
-            <div class="form_field">
-                <label>Purpose: </label>
-                {{ form.purpose }}
-            </div>
-            <div class="form_field">
-                <label>Category: </label>
-                {{ form.category }}
-            </div>
-            <div class="form_field comment">
-                <label>Comment: </label>
-                {{ form.comment }}
-            </div>
-            <div>
-                <button type="submit">Добавить</button>
-            </div>
+            <button type="submit">Добавить</button>
         </form>
     </div>
 </section>
-<section>
-    <h2>План расходов и доходов</h2>
-    <div class="mm_plan_tables">
+<section class="plan_balance">
+{#    <h2>План расходов и доходов</h2>#}
+    <div class="section_content mm_plan_tables">
         {% include 'landing/mm_plan_table.html' %}
     </div>
 </section>

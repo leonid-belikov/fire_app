@@ -1,15 +1,23 @@
 header {
-    background-color: rgb(142, 142, 160);
+    background: linear-gradient(90deg, #7b5a98, #c8aede, #7b5a98);
     position: fixed;
-    height: 90px;
     width: 100%;
     z-index: 99999;
-    box-shadow: 0 5px 8px 0px #6f6f6f;
+    box-shadow: 0 5px 8px 0px #3a3a3a;
+    height: 110px;
 }
 
-.header {
+header .wrap_container {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    align-content: space-between;
+}
+
+.header_main_info {
+     display: flex;
+     justify-content: space-between;
+     height: 70px;
+     width: 100%;
 }
 
 .header_title {
@@ -46,20 +54,31 @@ align-self: center;
     font-size: 16px;
     border: none;
     border-radius: 2px;
-    cursor: pointer
+    cursor: pointer;
+    background: #ffb127;
 }
 
 .content {
-    padding-top: 100px;
+    padding-top: 120px;
+}
+
+.sidebar {
+
+width: 200px;
+
+margin-right: 10px;
+}
+
+.mm_box {
+    
+display: flex;
 }
 
 .tab_content section {
-    background: linear-gradient(90deg, rgb(236, 239, 241), rgb(236, 239, 241) 40%, rgba(236, 239, 241, 0.7) 80%, rgba(236, 239, 241, 0.7));
-    padding: 10px;
-    box-shadow: 0px 7px 6px 0px #0000008f;
+    background: linear-gradient(90deg, #e5e9ef, rgba(255, 255, 255, 0.5));
+    padding: 0px;
 }
 .tab_content section:first-child {
-    margin-top: 0;
 }
 .tab_content section:last-child {
     padding-bottom: 50px;
@@ -71,13 +90,20 @@ section.plan_tab {
 
 /*Область с информацией*/
 
-.total_info {
+.tab_content .total_info {
     text-align: right;
     height: 56px;
+    margin-bottom: 10px;
+    padding: 10px;
 }
 .total_info-text {
     font-size: 27px;
-    font-weight: 700;
+    text-align: center;
+    color: #adadad;
+}
+
+.total_info-text span {
+    color: #000;
 }
 
 .total_info_plan {
@@ -92,47 +118,100 @@ section.plan_tab {
     flex-wrap: wrap;
     justify-content: flex-start;
     padding: 10px 0;
+    margin-left: 1px;
 }
 
 .filter_header {
-
 }
 
 .date_item {
-    background-color: #f6f9ff;
     height: 35px;
-    margin: 0 6px 3px;
-    width: 75px;
+    width: 26px;
     text-align: center;
     border: 1px solid #a5a5a5;
     line-height: 30px;
+    margin-left: -1px;
+    margin-bottom: -1px;
 }
 
 /*Область с формой*/
 
 .form_section {
-    /* display: none; */
+    margin-bottom: 10px;
+}
+
+.form_wrapper {
+display: flex;
+flex-direction: column;
+}
+
+#mm_plan_form {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 5px;
+}
+
+#mm_plan_form .form_field {
+    margin-right: 5px;
+    margin-top: 0;
+}
+
+.first_col {
+    width: 75%;
+    padding-right: 5px;
+}
+
+.first_row {
+    display: flex;
+}
+
+#mm_plan_form .form_field.purpose {
+    width: 30%;
+}
+
+#mm_plan_form .purpose input {
+    width: 100%;
+}
+
+#mm_plan_form .form_field.category {
+    flex-grow: 1;
+    margin-right: 0;
+}
+
+#mm_plan_form .category input {
+    width: 100%;
+}
+
+#mm_plan_form .comment {
+    width: 100%;
+    margin: 0;
+    height: 30px;
+}
+
+#mm_plan_form .comment textarea {
+    height: 30px;
 }
 
 #mm_form label, #mm_plan_form label {
-    min-width: 110px;
     display: inline-block;
-    text-align: right;
+    font-size: 16px;
 }
 
-#mm_form button, #mm_plan_form button {
+#mm_plan_form button {
+    width: 25%;
+}
+
+form button {
     font-size: 30px;
-    width: 248px;
-    height: 50px;
-    margin: 10px 0;
     cursor: pointer;
+    width: 100%;
 }
 
 .direction_checkbox label {
-    width: 110px;
+    width: 60px;
     display: inline-block;
-    text-align: right;
-    margin-bottom: 3px;
+    height: fit-content;
+    font-size: 16px;
 }
 
 .form_field.comment label {
@@ -145,15 +224,20 @@ section.plan_tab {
 }
 
 .form_field.comment textarea {
-    height: 60px;
+    height: 70px;
+    width: 100%;
+    resize: none;
+    font-size: 16px;
+}
+
+.direction_checkbox {
+    display: flex;
+    align-self: center;
 }
 
 .direction_checkbox input {
     width: 21px;
     height: 21px;
-    margin: 0;
-    top: 6px;
-    position: relative;
 }
 
 .form_field {
@@ -163,16 +247,18 @@ section.plan_tab {
 /*Область с таблицей данных*/
 
 .day_header {
-    margin: 20px 0 5px;
+    margin: 5px 0 5px;
     font-size: 25px;
 }
 
 #mm_table_wrap {
-    padding: 0 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 }
 
 .mms {
-    /*max-height: 400px;*/
+    flex-grow: 1;
 }
 
 .mms td {
@@ -186,7 +272,6 @@ section.plan_tab {
 .mm_editor {
     display: none;
     position: absolute;
-    /* padding: 2px 0; */
     height: 56px;
 }
 
@@ -201,10 +286,6 @@ section.plan_tab {
     height: 20px;
     padding: 0 5px;
     font-size: 18px;
-}
-
-#mm_row_form textarea {
-    /* resize: none; */
 }
 
 #mm_row_form button {
@@ -251,8 +332,8 @@ section.plan_tab {
 
 #mm_row_form .buttons {
     position: absolute;
-    right: -30px;
-    top: -32px;
+    right: -20px;
+    top: -30px;
     display: flex;
     box-shadow: 5px 5px 10px 0px #929292;
     background: hsla(240, 9%, 104%, 1);
@@ -274,7 +355,7 @@ section.plan_tab {
 
 .editor_comment {
     height: 51px;
-    width: 360px;
+    width: 290px;
     resize: none;
     font-size: 18px;
 }
@@ -289,7 +370,7 @@ section.plan_tab {
 
 .purpose-col {
     width: 200px;
-    background: #eceff1;
+    background: #e5e9ef;
     margin-right: 20px;
 }
 
@@ -299,8 +380,8 @@ section.plan_tab {
 
 .day_amounts {
     font-size: 16px;
-    color: #a5a5a5;
-    border-top: 1px solid #a5a5a5;
+    color: #adadad;
+    border-top: 1px solid #adadad;
     width: fit-content;
 }
 
@@ -320,7 +401,7 @@ section.plan_tab {
 }
 
 #mm_table tr {
-    border-bottom: 1px solid #999;
+    border-bottom: 1px solid #adadad;
     height: 56px;
 }
 
@@ -338,15 +419,13 @@ section.plan_tab {
 }
 
 #mm_table .category {
-    font-size: 14px;
-    color: #a5a5a5;
-    /* background: #fff; */
-    /* padding: 0 5px; */
+    font-size: 16px;
+    color: #adadad;
     width: fit-content;
 }
 
 #mm_table .comment {
-    width: 370px;
+    width: 320px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -376,38 +455,42 @@ section.plan_tab {
 
 .plan_table_wrap {
     /*display: inline-block;*/
+    width: 49%;
 }
 
 .mm_plan_tables {
-    margin: 20px 75px 0;
-    /*display: flex;*/
-    /*justify-content: space-between;*/
-    /*padding: 1px 75px;*/
+    display: flex;
+    justify-content: space-between;
 }
 
 .plan_table {
     border-collapse: collapse;
     display: block;
     margin: 20px auto;
-    width: 730px;
+    /* width: 730px; */
 }
 .plan_table tr {
     border-bottom: 1px solid #999;
+    /* display: flex; */
 }
 .plan_table td {
     padding: 6px 10px;
 }
 .plan_table td.date {
-    width: 120px;
+    /* width: 120px; */
 }
 .plan_table td.amount {
     width: 100px;
 }
 .plan_table td.purpose {
-    width: 180px;
+    width: 150px;
 }
 .plan_table td.comment {
-    width: 330px;
+    width: 190px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 190px;
+    overflow: hidden;
 }
 .plan_table .category-text {
     font-size: 14px;
@@ -417,24 +500,33 @@ section.plan_tab {
 
 
 #income_table {
-    background: linear-gradient(90deg, rgba(0, 255, 17, 0.3), transparent, rgba(0, 255, 17, 0.3));
+    background: linear-gradient(90deg, transparent 75%, rgba(0, 255, 17, 0.3));
 }
 
 #cost_table {
-    background: linear-gradient(90deg, rgba(255, 0, 0, 0.3), transparent, rgba(255, 0, 0, 0.3));
+    background: linear-gradient(90deg, rgba(255, 100, 100, 0.3), transparent 25%);
+}
+
+.tab_content section.plan_balance {
+    background: linear-gradient(90deg, #e5e9ef, rgba(255, 255, 255, 0.7));
 }
 
 /*Область с заголовками вкладок*/
 
 .tab_title {
+    transition: 300ms;
     display: inline-block;
-    background-color: rgb(236, 239, 241);
-    padding: 10px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+    padding: 5px 15px;
+    border-bottom: 5px solid #0000;
 }
 
-.tab_title:not(.current) {
-    box-shadow: inset 0 -10px 10px -13px #000;
-    color: #a2a2a2;
+.tab_title.current {
+    color: #fff;
+    border-bottom: 5px solid;
+}
+
+.tab_title:not(.current):hover {
+    transition: 500ms;
+    /* background-color: #0000007d; */
+    color: #fff;
 }
