@@ -44,6 +44,7 @@ def filter_by_date(request):
 
 def render_tab(request):
     template = request.POST['template']
+    print(request.POST)
     main_data = MainData(request)
     ctx = main_data.get_context()
 
